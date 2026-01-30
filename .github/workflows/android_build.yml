@@ -1,0 +1,27 @@
+name: Build Android APK
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with: { node-version: 18 }
+      - name: Install Dependencies
+        run: npm install
+      - name: Build Web Assets
+        run: |
+          mkdir -p www
+          cp index.html style.css app.js manifest.json www/ 2>/dev/null || :
+      - name: Capacitor Sync
+        run: npx cap sync
+      - name: Build with Gradle
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: forranova-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
