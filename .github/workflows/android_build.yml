@@ -1,27 +1,37 @@
-name: Build Android APK
+name: ForraNova Cloud Build
 on: [push]
 jobs:
-  build:
+  build-android:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with: { node-version: 18 }
-      - name: Install Dependencies
-        run: npm install
-      - name: Build Web Assets
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+      
+      - name: Install Capacitor
+        run: npm install @capacitor/core @capacitor/cli @capacitor/android
+        
+      - name: Build Assets
         run: |
           mkdir -p www
-          cp index.html style.css app.js manifest.json www/ 2>/dev/null || :
-      - name: Capacitor Sync
-        run: npx cap sync
-      - name: Build with Gradle
+          cp index.html style.css app.js manifest.json www/
+          
+      - name: Sync Android
+        run: npx cap sync android
+        
+      - name: Build APK
         run: |
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug
-      - name: Upload APK
-        uses: actions/upload-artifact@v3
+          
+      - name: Upload Finished APK
+        uses: actions/upload-artifact@v4
         with:
-          name: forranova-apk
+          name: ForraNova-Academic-AI
           path: android/app/build/outputs/apk/debug/app-debug.apk
