@@ -1,7 +1,7 @@
-name: ForraNova Cloud Build
+name: ForraNova Cloud Factory
 on: [push]
 jobs:
-  build-android:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -12,26 +12,30 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '17'
-      
-      - name: Install Capacitor
-        run: npm install @capacitor/core @capacitor/cli @capacitor/android
-        
-      - name: Build Assets
+
+      - name: Install Tools
         run: |
-          mkdir -p www
-          cp index.html style.css app.js manifest.json www/
+          npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/assets
           
-      - name: Sync Android
+      - name: Create Android Project
+        run: |
+          npx cap add android
+          
+      - name: Generate Shield Icon & Splash
+        run: |
+          npx @capacitor/assets generate --android --assetPath resources
+
+      - name: Sync Web Code
         run: npx cap sync android
-        
-      - name: Build APK
+
+      - name: Build Official APK
         run: |
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug
-          
-      - name: Upload Finished APK
+
+      - name: Upload ForraNova APK
         uses: actions/upload-artifact@v4
         with:
-          name: ForraNova-Academic-AI
+          name: ForraNova-Academy-v1
           path: android/app/build/outputs/apk/debug/app-debug.apk
