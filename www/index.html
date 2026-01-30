@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ForraNova Academy | Pro Learning Interface</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <div id="splash-screen">
+        <div class="splash-content">
+            <div class="splash-logo">FN</div>
+            <h1 class="splash-title">ForraNova</h1>
+            <div class="splash-loader">
+                <div class="loader-bar"></div>
+            </div>
+            <p id="splash-status">Synchronizing Synapses...</p>
+        </div>
+    </div>
+
+    <div class="app-container">
+        
+        <aside class="sidebar">
+            <div class="brand-zone">
+                <div class="logo-shield">FN</div>
+                <div class="brand-text">
+                    <h2>ForraNova</h2>
+                    <span>Pro Academic Core</span>
+                </div>
+            </div>
+
+            <nav class="main-nav">
+                <div class="nav-group">
+                    <label>Intelligence Core</label>
+                    <button class="nav-item active"><span>🧠</span> AI Neural Tutor</button>
+                    <button class="nav-item"><span>📚</span> Resource Vault</button>
+                    <button class="nav-item"><span>📉</span> Mastery Map</button>
+                </div>
+                
+                <div class="nav-group">
+                    <label>Voice Engine</label>
+                    <div class="voice-selector-wrapper">
+                        <select id="voice-engine-select" class="nav-item-select">
+                            <option>Scanning Neural Voices...</option>
+                        </select>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="student-profile-card">
+                <div class="profile-header">
+                    <div class="avatar-ring">
+                        <img src="icon.png" alt="Scholar" onerror="this.src='https://ui-avatars.com/api/?name=Scholar&background=4f46e5&color=fff'">
+                        <div class="status-indicator online"></div>
+                    </div>
+                    <div class="profile-info">
+                        <strong>Student Scholar</strong>
+                        <p id="level-display">Adaptive Level 1</p>
+                    </div>
+                </div>
+                <div class="xp-bar-container">
+                    <div class="xp-text"><span>XP</span> <span id="xp-count">4,200</span> / 5,000</div>
+                    <div class="xp-bar"><div class="xp-fill" style="width: 84%;"></div></div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="dashboard-viewport">
+            
+            <header class="dashboard-header">
+                <div class="header-left">
+                    <h1 id="view-title">Neural Interaction Core</h1>
+                    <div class="engine-status">
+                        <span id="engine-dot"></span>
+                        <span id="status-text">Initializing Engine...</span>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="quick-stats">
+                        <div class="stat-pill">🔥 5 Day Streak</div>
+                    </div>
+                    <button id="theme-toggle" class="icon-btn" title="Toggle Neural Theme">🌓</button>
+                    <button id="settings-btn" class="icon-btn">⚙️</button>
+                </div>
+            </header>
+
+            <div class="content-grid">
+                
+                <section class="interaction-core">
+                    <div id="chat-history" class="neural-chat-log">
+                        </div>
+
+                    <div class="input-nexus">
+                        <div class="input-toolbar">
+                            <div class="persona-tag">Tutor Persona:</div>
+                            <select id="tutor-personality">
+                                <option value="professional">Professional Academic</option>
+                                <option value="socratic">Socratic Mentor</option>
+                                <option value="creative">Creative Visualizer</option>
+                                <option value="technical">Technical Expert</option>
+                            </select>
+                            <div class="divider"></div>
+                            <button title="Equation Editor">∑</button>
+                            <button title="Code Block">{' '}</button>
+                        </div>
+                        <div class="input-wrapper">
+                            <textarea id="user-input" placeholder="Type your inquiry here (e.g., Explain Quantum Entanglement)..." rows="1"></textarea>
+                            <div class="input-actions">
+                                <button id="send-btn" class="send-circle">➔</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <aside class="intelligence-panel">
+                    
+                    <div class="gui-card mastery-card">
+                        <h3>Cognitive Mastery</h3>
+                        <div class="chart-container">
+                            <canvas id="masteryChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="gui-card cognitive-card">
+                        <h3>AI Perception</h3>
+                        <div class="metric-row">
+                            <label>Complexity</label>
+                            <div class="mini-bar"><div class="fill" style="width: 45%;"></div></div>
+                        </div>
+                        <div class="metric-row">
+                            <label>Context Depth</label>
+                            <div class="mini-bar"><div class="fill" style="width: 78%;"></div></div>
+                        </div>
+                    </div>
+
+                    <div class="gui-card actions-card">
+                        <h3>Teacher Functions</h3>
+                        <div class="action-grid">
+                            <button class="action-btn">📝 Quiz Me</button>
+                            <button class="action-btn">📊 Visualize</button>
+                            <button class="action-btn">🎧 Audio Lecture</button>
+                            <button class="action-btn">📋 Summarize</button>
+                        </div>
+                    </div>
+
+                </aside>
+            </div>
+        </main>
+    </div>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>
