@@ -1,16 +1,17 @@
-const CACHE_NAME = 'forranova-neural-v1.2';
+const CACHE_NAME = 'forranova-hub-v1.2';
 
 // 1. ASSETS TO CACHE
 // All paths are relative to where sw.js is located
-const OFFLINE_URLS = [
-    './',
-    './index.html',
-    './style.css',
-    './app.js',
-    './manifest.json',
-    './resources/icon.png',  
-    './resources/splash.png',
-    './resources/certificate.png',
+const ASSETS = [
+    '/ForraNova/',
+    '/ForraNova/index.html',
+    '/ForraNova/style.css',
+    '/ForraNova/app.js',
+    '/ForraNova/manifest.json',
+    // External assets from your static repo
+    'https://fofem.github.io/static/images/icon.png',
+    'https://fofem.github.io/static/images/splash.png',
+    'https://fofem.github.io/static/images/certificate.png',
     
     // --- External Core Libraries (Must be cached for Offline Math/PDF) ---
     'https://cdn.jsdelivr.net/npm/marked/marked.min.js',
@@ -29,9 +30,9 @@ const OFFLINE_URLS = [
 self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
-            console.log('ForraNova Shield: Defensive Caching Initialized');
+            console.log('ForraNova Hub: App Initialized');
             // Using addAll to lock in all math and UI assets
-            return cache.addAll(OFFLINE_URLS);
+            return cache.addAll(ASSETS);
         })
     );
     // Force the waiting service worker to become the active service worker
