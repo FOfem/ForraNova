@@ -23,7 +23,7 @@
 <body>
     <div id="splash-screen">
         <div class="splash-content">
-            <img src="../FOfem.github.io/static/images/logo.png" alt="ForraCorp Logo" class="splash-logo-img" onerror="this.style.display='none'"> 
+            <img src="../FOfem.github.io/static/images/logoF.png" alt="ForraCorp Logo" class="splash-logo-img" onerror="this.style.display='none'">
             
             <h1 class="splash-title">ForraNova Hub</h1>
             <p id="splash-status">Synchronizing Neural Matrix...</p>
@@ -42,6 +42,7 @@
             </div>
         </div>
     </div>
+
     <div id="setup-modal" class="modal-overlay" style="display: none;">
         <div class="modal-content">
             <h2>Identity Required</h2>
@@ -61,7 +62,7 @@
             <nav class="main-nav">
                 <div class="brand-zone">
                     <a onclick="showSection('academy')">
-                        <div class="logo-shield"><img src="resources/icon.png" class="splash-logo-img" onerror="this.style.display='none'"></div></a>
+                        <div class="logo-shield"><img src="../FOfem.github.io/static/images/icon.png" class="splash-logo-img" onerror="this.style.display='none'"></div></a>
                     <div class="brand-text">
                         <h2>ForraNova</h2>
                         <span>AI Hub v1.2</span>
@@ -908,7 +909,7 @@
                                             <div class="sync-status-badge">
                                                 <div class="brand-zone">
                                                     <a onclick="showSection('academy')">
-                                                        <div class="logo-shield"><img src="resources/icon.png" class="splash-logo-img" onerror="this.style.display='none'"></div></a>
+                                                        <div class="logo-shield"><img src="../FOfem.github.io/static/images/icon.png" class="splash-logo-img" onerror="this.style.display='none'"></div></a>
                                                     <div class="brand-text">
                                                         <h2>ForraNova</h2>
                                                         <span>AI Hub v1.2</span>
@@ -919,7 +920,7 @@
                                         </section>
 
                                         <div class="id2">
-                                                <img src="resources/splash.png" alt="ForraCorp Logo" onerror="this.style.display='none'"><br>
+                                                <img src="../FOfem.github.io/static/images/logoF.png" alt="ForraCorp Logo" onerror="this.style.display='none'"><br>
                                             <p>© 2026 | ForraNova Hub. (AI Assistant) Architectured By: ForraCorp. <a href="https://fofem.github.io"> fofem.github.io</a></p>
                                         </div>
                                     </div>
@@ -1861,75 +1862,6 @@
             event.currentTarget.classList.add('active');
         }
     </script>
-
-<script>
-    
-    // --- NEURAL NAVIGATION ENGINE FOR SIDEBAR MENU---
-let sideBarTimer;
-
-window.toggleSidebar = function() {
-    const sidebar = document.querySelector('.sidebar');
-    const isVisible = sidebar.classList.toggle('visible');
-    
-    if (isVisible) {
-        startSidebarTimer();
-    } else {
-        clearTimeout(sideBarTimer);
-    }
-};
-
-// Auto-hide after 5 seconds of inactivity
-function startSidebarTimer() {
-    clearTimeout(sideBarTimer);
-    sideBarTimer = setTimeout(() => {
-        document.querySelector('.sidebar').classList.remove('visible');
-    }, 5000); // 5000ms = 5 seconds
-}
-
-// Reset timer if user moves mouse or touches sidebar
-document.querySelector('.sidebar').addEventListener('mousemove', startSidebarTimer);
-document.querySelector('.sidebar').addEventListener('touchstart', startSidebarTimer);
-
-// --- SWIPE TO CLOSE LOGIC ---
-let touchStartX = 0;
-
-document.addEventListener('touchstart', e => {
-    touchStartX = e.changedTouches[0].screenX;
-});
-
-document.addEventListener('touchend', e => {
-    let touchEndX = e.changedTouches[0].screenX;
-    const sidebar = document.querySelector('.sidebar');
-    
-    // Swipe Left to Close
-    if (touchStartX - touchEndX > 70 && sidebar.classList.contains('visible')) {
-        sidebar.classList.remove('visible');
-    }
-    
-    // Swipe from Left Edge to Open
-    if (touchEndX - touchStartX > 70 && touchStartX < 50) {
-        sidebar.classList.add('visible');
-        startSidebarTimer();
-    }
-});
-
-
-window.toggleAccordion = function(labelElement) {
-    const group = labelElement.parentElement;
-    group.classList.toggle('collapsed');
-    
-    // Reset the auto-hide timer because the user is interacting
-    if (typeof startSidebarTimer === 'function') startSidebarTimer();
-};
-
-// Optional: Auto-collapse other groups when one opens
-function soloAccordion(selectedGroup) {
-    document.querySelectorAll('.nav-group').forEach(group => {
-        if (group !== selectedGroup) group.classList.add('collapsed');
-    });
-}
-</script>
-
 
 </body>
 </html>
