@@ -1,6 +1,6 @@
 {
-  "appId": "com.forranova.academy",
-  "appName": "ForraNova Academy",
+  "appId": "com.forranova.hub",
+  "appName": "ForraNova Hub",
   "webDir": "www",
   "bundledWebRuntime": false
 }
