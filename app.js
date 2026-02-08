@@ -1,3 +1,24 @@
+// Tell user to install as app
+let deferredPrompt;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    // Prevent Chrome 67 and earlier from automatically showing the prompt
+    e.preventDefault();
+    // Stash the event so it can be triggered later.
+    deferredPrompt = e;
+    // Update UI to notify the user they can install ForraNova
+    showInstallPromotion(); 
+});
+
+async function installForraNova() {
+    if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log(`User response to install: ${outcome}`);
+        deferredPrompt = null;
+    }
+}
+
 /**
  * ForraNova Academy - Core AI Engine v1.0.0
  * Features: Adaptive Learning, Multi-Voice Synthesis, Progress Matrix, Persistence
