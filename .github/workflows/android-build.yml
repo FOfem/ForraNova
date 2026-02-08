@@ -27,17 +27,16 @@ jobs:
 
       - name: Build Android APK
         run: |
-          # 1. Create the configuration directory for Bubblewrap
+          # 1. Ensure the config directory exists
           mkdir -p ~/.bubblewrap
           
-          # 2. Pre-configure Bubblewrap paths so it doesn't ask questions
-          # Using the variables provided by the GitHub runner
-          echo '{"jdkPath":"'"$JAVA_HOME"'","androidSdkPath":"'"$ANDROID_SDK_ROOT"'"}' > ~/.bubblewrap/config.json
+          # 2. Force-inject the exact paths for the GitHub Runner environment
+          # Note: We use the absolute path /usr/local/lib/android/sdk
+          echo '{"jdkPath":"/opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.14-7/x64","androidSdkPath":"/usr/local/lib/android/sdk"}' > ~/.bubblewrap/config.json
           
-          # 3. Build the APK using the twa-manifest.json
+          # 3. Build the APK. Bubblewrap will now see the paths it needs.
           bubblewrap build --yes
 
-        
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
