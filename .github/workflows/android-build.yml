@@ -5,28 +5,41 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  build_android:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Build Android App
-        uses: pwa-builder/pwa-auth-action@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          # This action handles the SDK and JDK automatically
-          pwa-url: "https://fofem.github.io/ForraNova/"
-          package-id: "com.forranova.hub"
-          app-name: "ForraNova Hub"
+          node-version: 20
 
-      - name: PWABuilder Android
-        uses: pwa-builder/pwabuilder-android-package-action@v1
+      - name: Setup Java
+        uses: actions/setup-java@v4
         with:
-          # It reads your manifest.json directly from your live site
-          manifest-url: "https://fofem.github.io/ForraNova/manifest.json"
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Install Bubblewrap
+        run: npm install -g @bubblewrap/cli
+
+      - name: Initialize and Build
+        run: |
+          # Create a dummy config so it doesn't ask questions
+          mkdir -p ~/.bubblewrap
+          echo '{"jdkPath":"'"$JAVA_HOME"'","androidSdkPath":"./android-sdk"}' > ~/.bubblewrap/config.json
           
-      - name: Upload APK
+          # Initialize the project from your manifest
+          bubblewrap init --manifest=https://fofem.github.io/ForraNova/manifest.json --quiet --yes
+          
+          # Build the APK
+          bubblewrap build --yes
+
+      - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ForraNova-Release-APK
-          path: ./*.apk
+          name: ForraNova-App-Package
+          path: |
+            *.apk
