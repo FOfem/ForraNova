@@ -27,19 +27,18 @@ jobs:
 
       - name: Initialize and Build
         run: |
-          # Create a dummy config so it doesn't ask questions
+          # 1. Setup local config paths
           mkdir -p ~/.bubblewrap
-          echo '{"jdkPath":"'"$JAVA_HOME"'","androidSdkPath":"./android-sdk"}' > ~/.bubblewrap/config.json
+          echo '{"jdkPath":"'"$JAVA_HOME"'","androidSdkPath":"/usr/local/lib/android/sdk"}' > ~/.bubblewrap/config.json
           
-          # Initialize the project from your manifest
-          bubblewrap init --manifest=https://fofem.github.io/ForraNova/manifest.json --quiet --yes
+          # 2. Initialize using the file in your folder (Fixes the HTML error)
+          bubblewrap init --manifest=./manifest.json --quiet --yes
           
-          # Build the APK
+          # 3. Build the APK
           bubblewrap build --yes
 
-      - name: Upload Artifacts
+      - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ForraNova-App-Package
-          path: |
-            *.apk
+          name: ForraNova-Release-APK
+          path: ./*.apk
