@@ -5,39 +5,27 @@ on:
     branches: [ main ]
 
 jobs:
-  build_android:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Build Android App
+        uses: pwa-builder/pwa-auth-action@v2
         with:
-          node-version: 18
+          # This action handles the SDK and JDK automatically
+          pwa-url: "https://fofem.github.io/ForraNova/"
+          package-id: "com.forranova.hub"
+          app-name: "ForraNova Hub"
 
-      - name: Setup Java
-        uses: actions/setup-java@v4
+      - name: PWABuilder Android
+        uses: pwa-builder/pwabuilder-android-package-action@v1
         with:
-          java-version: '17'
-          distribution: 'temurin'
-
-      - name: Install Bubblewrap
-        run: npm install -g @bubblewrap/cli
-
-      - name: Build Android APK
-        run: |
-          # 1. Ensure the config directory exists
-          mkdir -p ~/.bubblewrap
+          # It reads your manifest.json directly from your live site
+          manifest-url: "https://fofem.github.io/ForraNova/manifest.json"
           
-          # 2. Force-inject the exact paths for the GitHub Runner environment
-          # Note: We use the absolute path /usr/local/lib/android/sdk
-          echo '{"jdkPath":"/opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.14-7/x64","androidSdkPath":"/usr/local/lib/android/sdk"}' > ~/.bubblewrap/config.json
-          
-          # 3. Build the APK. Bubblewrap will now see the paths it needs.
-          bubblewrap build --yes
-
-      - name: Upload Artifact
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: ForraNova-Release-APK
