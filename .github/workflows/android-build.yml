@@ -1,48 +1,37 @@
-name: Build ForraNova Android APK
+name: ForraNova Android APK Build
 
 on:
   push:
-    branches:
-      - main  # Triggers when you push to the main branch
+    branches: [ main ]
 
 jobs:
-  build:
+  build_android:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: 18
 
-      - name: Install Bubblewrap CLI
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Install Bubblewrap
         run: npm install -g @bubblewrap/cli
 
-      - name: Initialize and Build Android Project
+      - name: Build Android APK
         run: |
-          # This command simulates the TWA initialization 
-          # In a real scenario, you would provide a 'twa-manifest.json'
-          bubblewrap build --unattended
-          
-      - name: Upload APK Artifact
+          # We use --yes to skip interactive prompts during the build
+          bubblewrap build --yes 
+        
+      - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: ForraNova-Release-APK
-          path: ./app-release-signed.apk
-
-2. The .well-known Handshake (Crucial)
-To make the app "Standalone" (removing the browser URL bar), you must prove you own the website.
- * Generate a Key: When you build the APK, a SHA-256 fingerprint is created.
- * AssetLinks: Create a file at root/.well-known/assetlinks.json.
- * Content: It should look like this:
-<!-- end list -->
-[{
-  "relation": ["delegate_permission/common.handle_all_urls"],
-  "target": {
-    "namespace": "android_app",
-    "package_name": "com.forranova.hub",
-    "sha256_cert_fingerprints": ["YOUR_APP_FINGERPRINT_HERE"]
-  }
-}]
+          path: ./*.apk
