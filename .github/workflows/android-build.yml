@@ -27,8 +27,16 @@ jobs:
 
       - name: Build Android APK
         run: |
-          # We use --yes to skip interactive prompts during the build
-          bubblewrap build --yes 
+          # 1. Create the configuration directory for Bubblewrap
+          mkdir -p ~/.bubblewrap
+          
+          # 2. Pre-configure Bubblewrap paths so it doesn't ask questions
+          # Using the variables provided by the GitHub runner
+          echo '{"jdkPath":"'"$JAVA_HOME"'","androidSdkPath":"'"$ANDROID_SDK_ROOT"'"}' > ~/.bubblewrap/config.json
+          
+          # 3. Build the APK using the twa-manifest.json
+          bubblewrap build --yes
+
         
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
