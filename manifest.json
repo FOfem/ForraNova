@@ -1,0 +1,47 @@
+{
+  "id": "/forranova-hub",
+  "name": "ForraNova Hub",
+  "short_name": "ForraNova",
+  "description": "Advanced AI-driven educational command center for adaptive learning.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0a0b10",
+  "theme_color": "#00ff91",
+  "orientation": "any",
+  "categories": ["education", "productivity"],
+  "icons": [
+    { 
+      "src": "./resources/icon.png",
+      "sizes": "192x192",
+      "type": "image/png", 
+      "purpose": "any"
+    },
+    { 
+      "src": "./resources/icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable" 
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "ForraNova Academy",
+      "url": "./index.html#academy-user-guide",
+      "icons": [{ "src": "./resources/icon.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Resource Lab",
+      "url": "./index.html#resource-lab-user-guide",
+      "icons": [{ "src": "./resources/icon.png", "sizes": "192x192" }]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "./resources/splash.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ]
+}

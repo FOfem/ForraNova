@@ -1,0 +1,6 @@
+{
+  "appId": "com.forranova.hub",
+  "appName": "ForraNova Hub",
+  "webDir": "./",
+  "bundledWebRuntime": false
+}
