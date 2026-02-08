@@ -1,41 +1,64 @@
-name: ForraNova Cloud Factory
-on: [push]
+name: ForraNova Pro Build Engine
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch: # Allows you to trigger the build manually
+
 jobs:
-  build:
+  build_android:
     runs-on: ubuntu-latest
+    
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      # 1. Get your code from GitHub
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      # 2. Setup Node.js Environment
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 18
-      - uses: actions/setup-java@v4
+          cache: 'npm'
+
+      # 3. Setup Java 17 (Crucial for Android 8.0 to Latest compatibility)
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
           java-version: '17'
+          distribution: 'zulu' # Optimized for Android builds
 
-      - name: Install Tools
+      # 4. Install Dependencies & Native Plugins
+      # We include the specific plugins you added for Notifications and Files
+      - name: Install Dependencies
         run: |
-          npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/assets
-          
-      - name: Create Android Project
-        run: |
-          npx cap add android
-          
-      - name: Generate Shield Icon & Splash
-        run: |
-          npx @capacitor/assets generate --android --assetPath resources
+          npm install
+          npm install @capacitor/core @capacitor/cli @capacitor/android
+          npm install @capacitor/local-notifications @capacitor/filesystem @capacitor/share
+          npm install jspdf # For your PDF export feature
 
-      - name: Sync Web Code
+      # 5. Build the Web Assets
+      - name: Build Web Project
+        run: npm run build --if-present
+
+      # 6. Synchronize Capacitor with Android
+      # This moves your icons, splash screen, and code into the Android folder
+      - name: Capacitor Sync Android
         run: npx cap sync android
 
-      - name: Build Official APK
+      # 7. Build the Final APK (Debug Version)
+      # This produces the .apk file you can install on your phone
+      - name: Build Android APK
         run: |
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug
 
+      # 8. Upload the Resulting APK
+      # You can download this from the 'Actions' tab in GitHub
       - name: Upload ForraNova APK
         uses: actions/upload-artifact@v4
         with:
-          name: ForraNova-Academy-v1
+          name: ForraNova-Academy-Pro
           path: android/app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 7
