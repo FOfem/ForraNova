@@ -7,23 +7,14 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout Source
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
-          # Removed cache: 'npm' to prevent lockfile errors
-
-      - name: Install & Build
-        run: |
-          npm install --no-package-lock
-          npm run build --if-present
-
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: . # Deploys the root folder
+          folder: . # Deploys the root folder directly
           branch: gh-pages
