@@ -1,47 +1,47 @@
 {
-  "name": "ForraNova Academy: Neural Learning",
+  "id": "/forranova-hub",
+  "name": "ForraNova Hub",
   "short_name": "ForraNova",
   "description": "Advanced AI-driven educational command center for adaptive learning.",
   "start_url": "./index.html",
-  "scope": "./",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#0a0c10",
-  "theme_color": "#4f46e5",
+  "background_color": "#0a0b10",
+  "theme_color": "#00ff91",
+  "orientation": "any",
   "categories": ["education", "productivity"],
   "icons": [
-    {
-      "src": "icon.png",
+    { 
+      "src": "./resources/icon.png",
       "sizes": "192x192",
-      "type": "image/png",
+      "type": "image/png", 
       "purpose": "any"
     },
-    {
-      "src": "icon.png",
+    { 
+      "src": "./resources/icon.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "maskable" 
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "ForraNova Academy",
+      "url": "./index.html#academy-user-guide",
+      "icons": [{ "src": "./resources/icon.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Resource Lab",
+      "url": "./index.html#resource-lab-user-guide",
+      "icons": [{ "src": "./resources/icon.png", "sizes": "192x192" }]
     }
   ],
   "screenshots": [
     {
-      "src": "icon.png",
-      "sizes": "512x512",
+      "src": "./resources/splash.png",
+      "sizes": "1280x720",
       "type": "image/png",
-      "label": "ForraNova Neural Interface Dashboard"
-    }
-  ],
-  "prefer_related_applications": false,
-  "shortcuts": [
-    {
-      "name": "Open AI Tutor",
-      "url": "./index.html?view=chat",
-      "icons": [{ "src": "icon.png", "sizes": "192x192" }]
-    },
-    {
-      "name": "View Lesson Library",
-      "url": "./index.html?view=notes",
-      "icons": [{ "src": "icon.png", "sizes": "192x192" }]
+      "form_factor": "wide"
     }
   ]
 }
