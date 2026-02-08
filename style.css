@@ -2895,7 +2895,7 @@ input[type="radio"] {
     aspect-ratio: 1120 / 815;
     width: 95%; 
     max-width: 1120px;
-    background-image: url('../FOfem.github.io/static/images/certificate.png');
+    background-image: url('https://fofem.github.io/static/images/certificate.png');
     background-size: 100% 100%;
     background-position: center;
     position: relative;
