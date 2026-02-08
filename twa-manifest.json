@@ -1,0 +1,20 @@
+{
+  "packageId": "com.forranova.hub",
+  "host": "fofem.github.io",
+  "name": "ForraNova Hub",
+  "launcherName": "ForraNova",
+  "display": "standalone",
+  "themeColor": "#0a0b10",
+  "navigationColor": "#0a0b10",
+  "backgroundColor": "#0a0b10",
+  "startUrl": "/ForraNova/",
+  "iconUrl": "https://fofem.github.io/ForraNova/resources/icon.png",
+  "maskableIconUrl": "https://fofem.github.io/ForraNova/resources/icon.png",
+  "clockwiseRotation": false,
+  "features": {},
+  "alpha": false,
+  "signingKey": {
+    "path": "./android.keystore",
+    "alias": "android"
+  }
+}
