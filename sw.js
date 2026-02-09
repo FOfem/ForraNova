@@ -13,15 +13,14 @@ const ASSETS = [
     'https://fofem.github.io/static/images/splash.png',
     'https://fofem.github.io/static/images/certificate.png',
     
-    // --- External Core Libraries (Must be cached for Offline Math/PDF) ---
-    'https://cdn.jsdelivr.net/npm/marked/marked.min.js',
+    // --- External Core Libraries (Must be cached for Offline Math, PDF, etc) ---
     'https://cdn.jsdelivr.net/npm/chart.js',
-    'https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.1.0/dist/chartjs-plugin-annotation.min.js',    
-    'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
+    'https://cdn.jsdelivr.net/npm/marked/marked.min.js',
     'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js',
-    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js',
     'https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js',
-    
+    'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js',
+    'https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.1.0/dist/chartjs-plugin-annotation.min.js',    
     // --- Fonts ---
     'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=JetBrains+Mono:wght@400;500&display=swap'
 ];
@@ -80,7 +79,7 @@ self.addEventListener('fetch', (event) => {
         }).catch(() => {
             // Return the root index.html if the user is offline and the requested page isn't cached
             if (event.request.mode === 'navigate') {
-                return caches.match('./index.html');
+                return caches.match('/ForraNova/index.html');
             }
         })
     );
