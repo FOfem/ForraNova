@@ -1,1868 +1,603 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>ForraNova | Neural AI Hub</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ForraNova Academy-Live</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=JetBrains+Mono:wght@400;500&family=Tangerine:wght@700&family=Geneva:wght@300;400;600;800&family=Courier+New:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
-    <link rel="manifest" href="manifest.json">
+<style>
+/* =============================
+   GLOBAL STYLES
+============================= */
+body{
+    margin:0;
+    font-family: 'Segoe UI', sans-serif;
+    background: radial-gradient(circle at center, #0f2027, #203a43, #2c5364);
+    color:white;
+    overflow:hidden;
+}
 
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.1.0/dist/chartjs-plugin-annotation.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
-    
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+.hidden{ display:none; }
+
+h1,h2,h3{ margin:0; }
+
+button{
+    background: linear-gradient(45deg,#00c6ff,#0072ff);
+    border:none;
+    padding:8px 14px;
+    color:white;
+    border-radius:8px;
+    cursor:pointer;
+    margin:4px 0;
+}
+
+select,input{
+    width:100%;
+    padding:6px;
+    margin:6px 0;
+    border-radius:6px;
+    border:none;
+}
+
+/* =============================
+   INITIALIZER
+============================= */
+#initializer{
+    position:absolute;
+    width:100%;
+    height:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+}
+
+.progress-container{
+    width:60%;
+    background:#222;
+    border-radius:20px;
+    margin-top:20px;
+}
+
+.progress-bar{
+    height:12px;
+    width:0%;
+    background:#00f2ff;
+    border-radius:20px;
+}
+
+/* =============================
+   LAYOUT
+============================= */
+#academy{
+    display:flex;
+    height:100vh;
+}
+
+#sidebar{
+    width:260px;
+    background:rgba(0,0,0,0.4);
+    backdrop-filter:blur(15px);
+    padding:20px;
+    overflow:auto;
+}
+
+#main{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    position:relative;
+}
+
+#chat{
+    flex:1;
+    overflow:auto;
+    padding:20px;
+}
+
+.message{
+    background:rgba(255,255,255,0.1);
+    padding:12px;
+    border-radius:12px;
+    margin-bottom:10px;
+}
+
+.controls{
+    display:flex;
+    padding:10px;
+    background:rgba(0,0,0,0.3);
+}
+
+#userInput{
+    flex:1;
+    padding:10px;
+    border-radius:8px;
+    border:none;
+}
+
+/* =============================
+   WAVE ANIMATION
+============================= */
+#waveCanvas{
+    position:absolute;
+    bottom:0;
+    width:100%;
+    height:200px;
+    pointer-events:none;
+}
+
+/* =============================
+   ONBOARDING MODAL
+============================= */
+#onboarding{
+    position:absolute;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.85);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.onboard-box{
+    background:#1e2a38;
+    padding:30px;
+    border-radius:12px;
+    width:300px;
+}
+</style>
 </head>
 <body>
 
-    <div id="splash-screen">
-        <div class="splash-content">
-            <img src="https://fofem.github.io/static/images/logoF.png" alt="ForraCorp Logo" class="splash-logo-img" onerror="this.style.display='none'">
-            
-            <h1 class="splash-title">ForraNova Hub</h1>
-            <p id="splash-status">Synchronizing Neural Matrix...</p>
+<!-- =============================
+     INITIALIZER
+============================= -->
+<div id="initializer">
+    <h1>ForraNova Academy-Live</h1>
+    <p>Knowledge Is For the Living</p>
+    <div class="progress-container">
+        <div class="progress-bar" id="progress"></div>
+    </div>
+</div>
 
-            <div class="splash-loader" id="loader-container">
-                <div class="loader-bar" id="init-loader-bar"></div>
-            </div>
-            
-            <button id="init-btn" class="action-btn" style="margin-top: 20px; display: none;">
-                INITIALIZE NEURAL LINK
-            </button>
-            
-            <div class="id"> 
-                <div>Architectured By: <a href="https://fofem.github.io"><br>fofem.github.io</a></div>
-                <div>@ 2026 ForraCorp.</div>
-            </div>
+<!-- =============================
+     ONBOARDING
+============================= -->
+<div id="onboarding" class="hidden">
+    <div class="onboard-box">
+        <h2>Welcome to ForraNova</h2>
+        <input type="text" id="nameInput" placeholder="Enter Your Name">
+        <input type="file" id="avatarInput" accept="image/*">
+        <button onclick="saveUser()">Enter Academy</button>
+    </div>
+</div>
+
+<!-- =============================
+     ACADEMY
+============================= -->
+<div id="academy" class="hidden">
+
+    <div id="sidebar">
+        <h2>ForraNova Academy-Live</h2>
+        <hr>
+
+        <img id="userAvatar" width="80" style="border-radius:50%">
+        <h3 id="userName"></h3>
+
+        <hr>
+        <label>AI Voice</label>
+        <select id="voiceSelect"></select>
+
+        <label>Persona</label>
+        <select id="personaSelect">
+            <option value="0.2">Professor</option>
+            <option value="0.5">Friendly Ali</option>
+            <option value="0.8">Comedian</option>
+        </select>
+
+        <label>Subject</label>
+        <select id="subjectSelect"></select>
+        <button onclick="addSubject()">+ Add Subject</button>
+
+        <label>Level</label>
+        <select id="levelSelect">
+            <option>General</option>
+            <option>Basic / Primary</option>
+            <option>Junior Secondary</option>
+            <option>Senior Secondary</option>
+            <option>Undergraduate / Graduate</option>
+            <option>Masters / PhD</option>
+        </select>
+    </div>
+
+    <div id="main">
+        <div id="chat"></div>
+
+        <div class="controls">
+            <input id="userInput" placeholder="Ask something...">
+            <button onclick="startMic()">🎤</button>
+            <button onclick="sendMessage()">Send</button>
         </div>
+
+        <canvas id="waveCanvas"></canvas>
     </div>
 
-    <div id="setup-modal" class="modal-overlay" style="display: none;">
-        <div class="modal-content">
-            <h2>Identity Required</h2>
-            <p>Personalize your learning Profile with The System.</p>
-            <input type="text" id="setup-name" placeholder="Enter your name...">
-            <button id="finish-setup">SYNC IDENTITY</button>
-        </div>
-    </div>
-
-    <div class="app-container">
-        <button id="menu-trigger" class="menu-fab" onclick="toggleSidebar()">
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
-        </button>
-        <aside class="sidebar">   
-            <nav class="main-nav">
-                <div class="brand-zone">
-                    <a onclick="showSection('academy')">
-                        <div class="logo-shield"><img src="https://fofem.github.io/static/images/icon.png" class="splash-logo-img" onerror="this.style.display='none'"></div></a>
-                    <div class="brand-text">
-                        <h2>ForraNova</h2>
-                        <span>AI Hub v1.2</span>
-                    </div>
-                </div>
-
-                <hr>
-                <div class="nav-group"> <label onclick="toggleAccordion(this)"> 🛠️ Settings <span class="chevron" onclick="event.stopPropagation(); toggleAccordion(this.parentElement)">▼</span>
-                    </label>
-                    <div class="nav-content"> 
-                        <button id="theme-toggle" class="nav-item-secondary">🌙 Theme🌓 ☀️ </button>
-                        <div class="voice-selector-wrapper"><span>Voice Options:</span>
-                            <select id="voice-selector" class="nav-item-select">
-                                <option>Scanning Available Voices...</option>
-                            </select>
-                        </div>                
-                    </div>
-
-                    <div class="nav-content"><span> Persona:</span>
-                        <select id="ai-persona-type" class="nav-item-select">
-                            <option value="friendly">Friendly Mentor</option>
-                            <option value="strict">Strict Professor</option>
-                            <option value="futuristic">Futuristic AI</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <hr>
-                <div class="nav-group"> <label onclick="toggleAccordion(this)">🧭 Navigation <span class="chevron">▼</span></label>
-                    <div class="nav-content">
-                        <button class="nav-item active" onclick="showSection('academy')"><span>🧠</span> Academy Core</button>
-                        <button class="nav-item" onclick="showSection('lab')"><span>🧪</span> Resource Lab</button>
-                        <button class="nav-item" onclick="showSection('vault')"><span>📁</span> Digital Trove</button>
-                        <button class="nav-item" onclick="showSection('studio')"><span>🎨</span> Multimedia Studio</button>
-                        <button class="nav-item" onclick="showSection('annex')"><span>📍</span> Annex</button>
-                    </div>
-                </div>
-
-                <hr>
-                <div class="nav-group"> <label onclick="toggleAccordion(this)">🆔 Personal Profile <span class="chevron">▼</span></label>
-                    <div class="nav-content">
-                        <strong id="display-name">Profile:</strong>            
-                        <div class="avatar-ring" onclick="document.getElementById('profile-upload').click()">
-                            <img id="user-avatar-img" src="icon.png" alt="Scholar" onerror="this.src='https://ui-avatars.com/api/?name=S&background=00f2ff&color=fff'">
-                            <input type="file" id="profile-upload" hidden accept="image/*">
-                        </div> 
-                        <div class="progress-track"><div id="progress-bar"></div></div>
-                        <strong id="level-display">Level 1</strong>
-                    </div>
-                </div>
-
-                <hr>
-                <div class="nav-group"> <label onclick="toggleAccordion(this)">🔍 Quatation Search <span class="chevron">▼</span></label>
-                    <div class="nav-content">
-                        <div class="search-wrapper" style="padding: 10px;">
-                            <input type="text" id="scripture-search" placeholder="Search (e.g. Strength, Fear)..." 
-                                   onkeyup="WisdomCore.search()" 
-                                   style="width:100%; font-size: 0.8rem; border-color: var(--primary-glow);">
-                        </div>
-                        <div id="search-results" class="nav-content" style="max-height: 200px; overflow-y: auto;">
-                        <br>
-                        </div>
-                    </div>
-                </div>
-            </nav>
-        </aside>
-
-        <main class="dashboard-viewport">
-            <header class="dashboard-header">
-                <h1 id="view-title">ForraNova Academy</h1> 
-                <div class="header-right">
-                    <button class="icon-btn"><div class="stat-pill">🔥 <span id="streak-count">0</span> Day Streak ⚙️</div></button>
-                    
-                </div>
-            </header>
-
-            <div class="content-container">
-
-                <section id="section-academy" class="app-section active">
-                    <div class="navigation">
-                        <button class="nav-item" onclick="showSection('lab')"><span> ⏩ </span></button>
-                    </div>
-                
-                    <div class="content-grid">
-                        <div class="interaction-core">
-                            <div id="chat-history" class="neural-chat-log">
-                                <div id="ai-response">Awaiting AI neural response...</div>
-                            </div>
-
-                            <div class="input-nexus">
-                                <div class="card-header ">
-                                    <h2>📝 Academic Core</h2><hr>
-                                    <p>The ForraNova Class Room - Center for learning.</p>
-                                </div>
-
-                                <div class="academic-config-bar">
-                                    <div class="config-item">
-                                        <label><i class="fas fa-graduation-cap"></i> Level:</label>
-                                        <select id="student-level" class="academic-select">
-                                            <option value="general">General (Auto)</option>
-                                            <option value="primary">Primary / Basic</option>
-                                            <option value="junior-secondary">Junior Secondary</option>
-                                            <option value="senior-secondary">Senior Secondary</option>
-                                            <option value="university">University / Undergraduate</option>
-                                            <option value="postgrad">Post-Graduate (PhD/Masters)</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="config-item">
-                                        <label><i class="fas fa-book"></i> Subject:</label>
-                                        <select id="student-subject" class="academic-select">
-                                            <option value="general">General Studies</option>
-                                            <option value="biology">Biology</option>
-                                            <option value="chemistry">Chemistry</option>
-                                            <option value="physics">Physics</option>
-                                        </select>
-                                        <button onclick="AcademicCore.addNewSubject()" class="add-sub-btn" title="Add New Subject">+</button>
-                                    </div>
-
-                                    <div class="student-performance-chip" id="performance-indicator">
-                                        <i class="fas fa-chart-line"></i> Performance: <span id="perf-score">Ready</span>
-                                    </div>
-                                </div>
-
-                                <div class="input-toolbar">
-                                    <select id="tutor-personality">
-                                        <option value="professional">Academic</option>
-                                        <option value="socratic">Socratic</option>
-                                    </select>
-                                    <button id="mic-btn">🎤</button>
-                                </div>
-                                <div class="input-wrapper">
-                                    <textarea id="user-input" placeholder=" Ask Me..." rows="1"></textarea>
-                                    <button id="send-btn" class="send-circle">➔</button>
-                                </div>
-
-                                <div class="gui-card">                            
-                                    <h3>📖 Student Desk</h3><hr>
-                                   <p>Take down lesson notes in blank pages or in exercise book and save in your desired file type to Digital Trove Treasury</p>
-                                   <div class="academy-workspace">
-                                        <button onclick="NeuralStudio.saveToVault({type: 'document', format: document.getElementById('export-format').value})" class="send-circle"><span>Save to Trove</span>
-                                        </button>
-
-                                        <div class="tool-group">
-                                            <button onclick="NeuralNotepad.open('blank')" class="study-btn">
-                                                <i class="fas fa-file"></i> <span>Blank Note</span>
-                                            </button> 
-                                            <button onclick="NeuralNotepad.open('lined')" class="study-btn">
-                                                <i class="fas fa-file-alt"></i> <span>Exercise Book</span>
-                                            </button>
-                                        </div>
-
-                                        <div id="digital-trove-display" class="trove-grid">
-                                            </div>
-                                    </div>
-
-                                    <div id="neural-notepad" class="floating-window" style="display:none;">
-                                        <div class="notepad-header" id="notepad-drag">
-                                            <input type="text" id="active-file-name" placeholder="Untitled_Note">
-                                            <div class="window-controls">
-                                                <button class="action-btn" onclick="NeuralNotepad.close()">×</button>
-                                            </div>
-                                        </div>
-                                        <div class="notepad-toolbar">
-                                            <button class="action-btn" onclick="document.execCommand('bold')"><b>B</b></button>
-                                            <button class="action-btn"  onclick="document.execCommand('italic')"><i>I</i></button>
-                                            <select class="academic-select" id="export-format">
-                                                <option value="txt">.txt</option>
-                                                <option value="docx">.docx</option>
-                                                <option value="pdf">.pdf</option>
-                                                <option value="html">.html</option>
-                                                <option value="css">.css</option>
-                                                <option value="js">.js</option>
-
-                                            </select>
-                                            <button onclick="NeuralNotepad.save()" class="save-btn">Save to Trove</button>
-                                            <button class="action-btn"  onclick="NeuralNotepad.downloadLocal()" class="dl-btn">Download to PC</button>
-                                        </div>
-                                        <div id="neural-editor" contenteditable="true" class="editor-blank"></div>
-                                    </div>                        
-                                </div>
-
-                            </div>
-                        </div>
-
-                        <div class="gui-card image-gen-card">
-                            <div class="card-header ">
-                                <h2>🧠 Analytics</h2><hr>
-                                <p>Student learning, understanding and mastery.</p>
-                            </div>
-                            <div class="studio-card analytics-dashboard">
-                                <div class="card-header">
-                                    <i class="fas fa-chart-network"></i>
-                                </div>
-
-                                <div class="chart-container">
-                                    <canvas id="masteryChart"></canvas>
-                                </div>
-
-                                <div class="stats-grid">
-                                    <div class="stat-item">
-                                        <span class="stat-label">COGNITIVE LOAD</span>
-                                        <div class="stat-bar"><div class="stat-fill" style="width: 65%;"></div></div>
-                                    </div>
-                                    <div class="stat-item">
-                                        <span class="stat-label">NEURAL SYNC</span>
-                                        <span class="stat-value">98.2%</span>
-                                    </div>
-                                </div>
-                            </div> 
-                        </div>
-
-                        <div class="gui-card">
-                            <div class="card-header ">
-                                <h2>💡 Reader</h2><hr>
-                                <p>Read aloud highlighted text in study notes for auditory processing.</p>
-                            </div>
-                            <button class="action-btn" onclick="NeuralReader.readSelection()">
-                                <span>🔊</span> Process Selection
-                            </button>
-                            
-                            <div class="gui-card">
-                                <div class="card-header ">
-                                    <h2>🎯 Essay Summary</h2><hr>
-                                    <p>Paste long test to summarize it into bullet points.</p>
-                                </div>
-                                <div id="summary-output" class="summary-box" style="display:none;">
-                                    <ul id="summary-list"></ul>
-                                </div>
-                                <button class="action-btn" onclick="NeuralSummarizer.analyze()">
-                                    <span>⚡</span> Generate Key Insights
-                                </button>
-                            </div>
-
-                            <section id="performance-dashboard" class="dashboard-container">
-                                <div class="dashboard-header card-header">
-                                    <h2><i class="fas fa-chart-pie"></i> Progress Map</h2>
-                                    <p>Student's Real-time Progress Analytics Report.</p>
-                                </div><hr>
-
-                                <div class="stats-grid">
-                                    <div class="stat-card" id="stat-government">
-                                        <span class="stat-label">Biology</span>
-                                        <div class="stat-bar"><div class="fill" style="width: 0%"></div></div>
-                                        <span class="stat-value">0%</span>
-                                    </div>
-                                    <div class="stat-card" id="stat-biology">
-                                        <span class="stat-label">Chemistry</span>
-                                        <div class="stat-bar"><div class="fill" style="width: 0%"></div></div>
-                                        <span class="stat-value">0%</span>
-                                    </div>
-                                    <div class="stat-card" id="stat-chemistry">
-                                        <span class="stat-label">Physics</span>
-                                        <div class="stat-bar"><div class="fill" style="width: 0%"></div></div>
-                                        <span class="stat-value">0%</span>
-                                    </div>
-                                </div>
-
-                                <div class="analytics-surface">
-                                    <canvas id="performanceChart"></canvas> 
-                                    </div>
-                            </section>
-                        </div>
-
-                        <aside class="intelligence-panel">
-                            <div class="gui-card actions-card">
-                                <div class="card-header ">
-                                    <h2>📊 Exams and Records</h2><hr>
-                                    <p>Student Examination - Check your learning capacity and see the performance. Print out the result.</p>
-                                </div>
-                                <div id="performance-summary" class="gui-card hidden">
-                                    <h3> Session Performance</h3><hr>
-                                    <div class="perf-stats">
-                                        <div class="p-stat"><span>Accuracy:</span> <strong id="perf-acc">0%</strong></div>
-                                        <div class="p-stat"><span>Sync Gain:</span> <strong id="perf-gain">+0</strong></div>
-                                    </div>
-                                    <p id="ai-feedback">Awaiting quiz completion...</p>
-                                </div>
-                                
-                                <div class="card-header ">
-                                    <h2>🖥️ Teacher's Tools</h2><hr>
-                                    <p>Start class quiz, generate student performance records, search for student exam report, Begin end of session Examination.</p>
-                                </div>
-                                <div class="action-grid">
-                                
-                                        <button class="action-btn" onclick="QuizEngine.open()"><i class="fas fa-lightbulb"></i> Class Quiz
-                                        </button> 
-
-                                        <button class="action-btn" onclick="ExamEngine.init('Biology', 'Senior Secondary 3')" style="background: var(--secondary-glow);">
-                                            <i class="fas fa-graduation-cap"></i> Final Exam
-                                        </button>
-
-                                       <div class="search-group" >
-                                            <input type="text" id="exam-search-input" placeholder="🔍 Enter Subject..." style="flex: 1; padding: 10px; border-radius: 5px; background: var(--input-bg); color: white; border: 1px solid var(--glass-border);">
-                                            
-                                            <button class="action-btn" onclick="ExamReports.search(document.getElementById('exam-search-input').value)">
-                                                📄 PDF Export 
-                                            </button>
-
-                                            <button class="action-btn" onclick="CertificateEngine.render()">
-                                                <span>🎓Get Certificate</span>
-                                            </button>
-
-                                        <div class="gui-card  actions-card">
-                                            <div class="search-box">
-                                                <input type="text" placeholder="Search Subject or Level...">
-                                            
-                                                <button class="btn" onclick="ExamReports.search(document.getElementById('exam-search-input').value)">🔍 Find Results
-                                                </button>
-                                            </div>
-                                        </div> 
-                                    </div> <div id="search-results-display"></div>
-                                </div>                                
-                            </div>
-
-                            <div id="quiz-overlay" class="modal hidden">
-                                <div class="gui-card quiz-box">
-                                    <h2 id="quiz-question">Initializing Question...</h2>
-                                    <div id="quiz-options"></div>
-                                    <button onclick="closeQuiz()" class="close-btn">End Session</button>
-                                </div>
-                            </div>
-                            
-                        </aside>
-
-                            
-                        <div id="exam-overlay" class="exam-modal" style="display:none;">
-                            <div class="exam-header">
-                                <div class="exam-branding">
-                                    <div class="card-header ">
-                                        <h2>✍️ ForraNova Academy</h2><hr>
-                                        <p>Session Examination</p>
-                                    </div>                                    
-                                
-                                    <span id="exam-timer">Time Left: 50:00</span>
-                                    <span id="exam-subject">Subject: Biology</span>
-                                    <span id="exam-level">Level: SS 3</span>
-                                </div>
-                                <button class="quit-btn" onclick="ExamEngine.quit()">Quit Exam</button>
-                            </div>
-
-                            <div id="exam-content" class="exam-body">
-                                </div>
-
-                            <div class="exam-footer">
-                                <button id="next-phase-btn" class="action-btn" style="display:none;" onclick="ExamEngine.startNextPhase()">Start Next Phase</button>
-                                <button id="submit-exam-btn" class="action-btn" onclick="ExamEngine.submitCurrentPhase()">Submit Phase</button>
-                            </div>
-                        </div>
-                    </div>  
-
-                </section>
-
-                <section id="section-lab" class="app-section">
-                    <div class="navigation">
-                        <button class="nav-item" onclick="showSection('academy')"><span> ⏪ </span></button>
-                        <button class="nav-item" onclick="showSection('vault')"><span> ⏩ </span></button>
-                    </div>
-                    <div class="lab-layout">
-
-                        <div class="gui-card">
-                            <div class="card-header ">
-                                <h2>⚖️ Quantum Calculator</h2><hr>
-                                <p>Scientific Calculator.</p>
-                            </div>
-                            <div class="studio-card quantum-calc">
-                            <h3>  </h3><hr>
-                                <div class="calc-header">
-                                    <select id="calc-mode" onchange="QuantumCalc.switchMode()">
-                                        <option value="math">STANDARD MATH</option>
-                                        <option value="cmplx">COMPLEX NUMBERS</option>
-                                        <option value="base-n">BASE-N COMPUTING</option>
-                                        <option value="poly">POLYNOMIAL SOLVER</option>
-                                        <option value="table">FUNCTION TABLE (f(x) Map)</option>
-                                        <option value="matrix">MATRIX / VECTOR (Linear)</option>
-                                        <option value="stat">STATISTICS & DISTRIBUTION</option>
-                                        <option value="unit">PROFESSIONAL CONVERTER</option>
-                                    </select>
-                                </div>
-
-                                <div class="calc-display">
-                                    <input type="text" id="calc-screen" readonly placeholder="0">
-                                    
-                                    <div id="base-n-grid" class="sub-display" style="display:none;">
-                                        <div>BIN: <span id="base-bin">-</span></div>
-                                        <div>HEX: <span id="base-hex">-</span></div>
-                                        <div>OCT: <span id="base-oct">-</span></div>
-                                    </div>
-                                </div>
-
-                                <div class="dynamic-panels">
-                                    
-                                    <div id="calc-unit-panel" class="panel" style="display:none;">
-                                        <div class="unit-controls">
-                                            <select id="unit-category" onchange="UnitEngine.updateUnitLists()">
-                                                <option value="length">📏 Length</option>
-                                                <option value="mass">⚖️ Mass</option>
-                                                <option value="temp">🌡️ Temperature</option>
-                                                <option value="data">💾 Digital Data</option>
-                                                <option value="area">🗺️ Area</option>
-                                                <option value="speed">🏎️ Speed</option>
-                                            </select>
-                                            <input type="number" id="unit-val" placeholder="Input Value">
-                                            <div class="unit-selection">
-                                                <select id="unit-from"></select>
-                                                <span>➜</span>
-                                                <select id="unit-to"></select>
-                                            </div>
-                                            <button onclick="UnitEngine.convert()" class="compute-btn">CONVERT UNIT</button>
-                                        </div>
-                                    </div>
-
-                                    <div id="calc-poly-inputs" class="panel grid-5" style="display:none;">
-                                        <input type="number" id="poly-a" placeholder="ax⁴">
-                                        <input type="number" id="poly-b" placeholder="bx³">
-                                        <input type="number" id="poly-c" placeholder="cx²">
-                                        <input type="number" id="poly-d" placeholder="dx">
-                                        <input type="number" id="poly-e" placeholder="e">
-                                        <button onclick="QuantumCalc.runPolySolve()" class="full-w">SOLVE EQUATION</button>
-                                    </div>
-
-                                    <div id="calc-matrix-panel" class="panel" style="display:none;">
-                                        <div class="matrix-grid">
-                                            <input type="number" id="m11" placeholder="a11"> <input type="number" id="m12" placeholder="a12"> <input type="number" id="m13" placeholder="a13">
-                                            <input type="number" id="m21" placeholder="a21"> <input type="number" id="m22" placeholder="a22"> <input type="number" id="m23" placeholder="a23">
-                                            <input type="number" id="m31" placeholder="a31"> <input type="number" id="m32" placeholder="a32"> <input type="number" id="m33" placeholder="a33">
-                                        </div>
-                                        <div class="flex-row">
-                                            <button onclick="MatrixLogic.determinant()">DET</button>
-                                            <button onclick="MatrixLogic.vectorDot()">VEC-DOT</button>
-                                        </div>
-                                    </div>
-
-                                    <div id="calc-stats-panel" class="panel" style="display:none;">
-                                        <textarea id="stats-data" placeholder="Enter values: 10, 25, 40..."></textarea>
-                                        <button onclick="StatsLogic.analyze()" class="full-w">CALCULATE STATS</button>
-                                    </div>
-                                </div>
-
-                                <div class="calc-action-row">
-                                    <div class="d-pad">
-                                        <button onclick="moveCursor('up')" class="dp-up">▲</button>
-                                        <div class="dp-mid">
-                                            <button onclick="moveCursor('left')">◀</button>
-                                            <button onclick="moveCursor('right')">▶</button>
-                                        </div>
-                                        <button onclick="moveCursor('down')" class="dp-down">▼</button>
-                                    </div>
-
-                                    <div class="tool-buttons">
-                                        <button onclick="QuantumCalc.openCamera()" class="btn-scan">📸 SCAN</button>
-                                        <button onclick="QuantumCalc.plot()" class="btn-plot">📈 PLOT</button>
-                                    </div>
-                                </div>
-
-                                <div class="calc-keypad">
-                                    <button class="k-sci" onclick="num('sin(')">sin</button>
-                                    <button class="k-sci" onclick="num('cos(')">cos</button>
-                                    <button class="k-sci" onclick="num('tan(')">tan</button>
-                                    <button class="k-sci" onclick="num('i')">i</button>
-                                    <button class="k-sci" onclick="num('Math.PI')">π</button>
-
-                                    <button onclick="num('7')">7</button>
-                                    <button onclick="num('8')">8</button>
-                                    <button onclick="num('9')">9</button>
-                                    <button class="k-op" onclick="deleteLast()">DEL</button>
-                                    <button class="k-danger" onclick="clearCalc()">AC</button>
-
-                                    <button onclick="num('4')">4</button>
-                                    <button onclick="num('5')">5</button>
-                                    <button onclick="num('6')">6</button>
-                                    <button class="k-op" onclick="num('*')">×</button>
-                                    <button class="k-op" onclick="num('/')">÷</button>
-
-                                    <button onclick="num('1')">1</button>
-                                    <button onclick="num('2')">2</button>
-                                    <button onclick="num('3')">3</button>
-                                    <button class="k-op" onclick="num('+')">+</button>
-                                    <button class="k-op" onclick="num('-')">-</button>
-
-                                    <button onclick="num('0')">0</button>
-                                    <button onclick="num('.')">.</button>
-                                    <button onclick="num('**')">^</button>
-                                    <button class="k-action" onclick="calc()">COMPUTE</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="gui-card"> 
-                            <div id="scanner-ui" class="scanner-container hidden">
-                                <div class="scanner-overlay">
-                                    <div class="card-header ">
-                                        <h2>📸 Equation Scanner</h2><hr>
-                                        <p>Scan equation from book to the scientific calculator.</p>
-                                    </div>  
-                                <div class="scan-frame"></div>
-                                <p class="scan-status"><p>RECOGNIZING EQUATION...</p>(Properly align equation within frame.)</p>
-
-                                <button onclick="QuantumCalc.closeScanner()" class="close-scan">CANCEL</button>
-                                </div>
-                                <video id="camera-preview" autoplay playsinline></video>
-                            </div>
-                        </div>
-
-                        <div class="gui-card">
-                            <div class="card-header ">
-                                <h2>📈 Graphplot</h2><hr>
-                                <p>Plot Mathematical graph from the scientific calculator.</p>
-                            </div>
-                            <div class="calc-display-group">
-                                <div id="neural-lcd" class="lcd-screen">
-                                    <div class="lcd-text-layer">
-                                        <div id="lcd-history" class="history-scroll"></div>
-                                        <input type="text" id="calc-screen" readonly class="copyable-result" onclick="QuantumCalc.copyResult()">
-                                        <div id="lcd-formula-hint"></div>
-                                    </div>
-
-                                    <div id="mini-graph-container" class="hidden">
-                                        <canvas id="graphCanvas"></canvas>
-                                        <div class="mini-controls">
-                                            <button onclick="GraphEngine.toggleGrid()">🌐</button>
-                                            <button onclick="GraphEngine.zoom(0.8)">-</button>
-                                            <button onclick="GraphEngine.zoom(1.2)">+</button>
-                                            <button onclick="GraphEngine.resetZoom()">🔄</button>
-                                            <button onclick="GraphEngine.toggleFullScreen()" class="fs-btn">⛶</button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="graph-controls">
-                                    <button onclick="GraphEngine.toggleGrid()">🌐Lines</button>
-                                    <button onclick="GraphEngine.zoom(0.8)">-🔍OUT</button>
-                                    <button onclick="GraphEngine.zoom(1.2)">+🔍IN</button>
-                                 </div>
-                                <div class="graph-controls">   
-                                    <button onclick="GraphEngine.resetZoom()">🔄RESET</button>
-                                    <button onclick="GraphEngine.toggleFullScreen()" class="fs-btn">⛶ Full Screen</button>
-                                </div>
-
-                                <div class="memory-status">
-                                    <span id="mem-indicator">M: 0</span>
-                                    <span id="mode-indicator">MODE: MATH</span>
-                                </div>
-                            </div>
-                        </div>                        
-
-
-
-                        <div class="gui-card">
-                            <div class="card-header ">
-                                <h2>🎨 Sketchpad</h2><hr>
-                                <p>Freehand sketch canvas.</p>
-                            </div>
-                            <div class="studio-card sketchpad-container">
-                                <div class="sketch-wrapper">
-                                    <canvas id="sketch-canvas"></canvas>
-                                </div>
-                                <div class="sketch-controls">
-                                    <button onclick="clearCanvas()" class="sketch-btn clear">
-                                        <span>🗑️</span> Delete Canvas
-                                    </button>
-                                    <div class="brush-indicator">
-                                        <div class="dot"></div>
-                                        <span> Pencil</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> 
-                    </div>
-                </section>
-
-                <section id="section-vault" class="app-section">
-                    <div class="navigation">
-                        <button class="nav-item" onclick="showSection('lab')"><span> ⏪ </span></button>
-                        <button class="nav-item" onclick="showSection('studio')"><span> ⏩ </span></button>
-                    </div>
-
-                    <div class="vault-grid-layout">
-                        <div class="gui-card reader-card">
-                            <div class="card-header ">
-                                <h2><i class="fas fa-microchip"></i> Workbench</h2><hr>
-                                <p>Write text, Upload or Drag & Drop any file to analyze or process it with full control and save to Treasury.</p>
-                            </div>
-                            <section id="neural-workbench" class="workbench-container">
-
-                                <div id="workbench-status-bar" class="status-bar">
-                                    <span id="workbench-status-text">Empty Table</span>
-                                    <div id="voice-waves" class="voice-anim" style="display:none;">
-                                        <span></span><span></span><span></span>
-                                    </div>
-                                </div>
-                                <div id="workbench-surface" class="workbench-surface" 
-                                     ondragover="NeuralWorkbench.handleDragOver(event)" 
-                                     ondragleave="NeuralWorkbench.handleDragLeave(event)" 
-                                     ondrop="NeuralWorkbench.handleDrop(event)">
-                                    
-                                    <div class="workbench-overlay-hint">
-                                        <i class="fas fa-file-import"></i>
-                                        <p>Type here, or Drag & Drop any file here</p>
-                                    </div>
-
-                                    <div id="workbench-pad" contenteditable="true" placeholder="Type or paste text here... (Manual trigger required for voice)"></div>
-                                </div>
-                                <p>Students Reading Table. Read and instantly check your retentive ability. See your real-time Progress Map in the Classroom.</p>
-                                <div class="control-group">
-                                    <label for="workbench-file-upload" class="control-btn upload-btn" title="Upload Media">
-                                        <i class="fas fa-folder-plus"></i> Import
-                                        <input type="file" id="
-                                        workbench-file-upload" hidden onchange="NeuralWorkbench.handleFileUpload(event)">
-                                    </label>
-
-                                    <button class="control-btn audio-btn" onclick="WorkbenchController.playActiveContext()"><i class="fas fa-play"></i>  Play</button>
-
-                                    <button class="control-btn stop-btn"onclick="WorkbenchController.stopAll()"><i class="fas fa-stop"></i> Stop</button>
-                                     </div>
-                                
-                                <div class="control-group">
-                                    <button onclick="NeuralWorkbench.saveToVault()" class="control-btn save-btn" title="Commit to Digital Trove">
-                                        <i class="fas fa-cloud-download-alt"></i> Save
-                                    </button>
-                                
-                                    <button class="control-btn quiz-btn" onclick="NeuralQuiz.generateQuiz()"><i class="fas fa-spell-check"></i> Quiz Me</button>
-
-                                    <button class="control-btn clear-btn" onclick="WorkbenchController.clearAll()"><i class="fas fa-trash-alt"></i> Clear</button>
-                                    
-                                </div>
-                            </section>
-                        </div>
-                        
-                        <div class="gui-card">
-                            <section id="sketch-gallery" class="help-card animate-in" style="margin-top: 30px;">
-                                <div class="gallery-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                                    <h3 class="glow-text"><i class="fas fa-palette"></i> Neural Schematic Gallery</h3>
-                                    <button class="calc-btn" onclick="GalleryCore.loadDrawings()">
-                                        <i class="fas fa-sync-alt"></i> Refresh Gallery
-                                    </button>
-                                </div>
-                                
-                                <div id="gallery-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px;">
-                                    <p class="empty-msg" style="color: var(--text-dim); text-align: center; grid-column: 1 / -1;">
-                                        No schematics found in the vault. Save a drawing from the Lab to begin.
-                                    </p>
-                                </div>
-                            </section>
-                        </div>
-
-                    </div>
-
-                    <div class="gui-card vault-card">
-                        <div class="card-header ">
-                            <h2>🖼️ Projector Dispaly</h2><hr>
-                            <p>View selected file content.</p>
-                        </div>
-                        <section id="digital-trove-container" class="trove-wrap">
-                            <div class="trove-header">                            
-                                <div class="search-box">
-                                    <i class="fas fa-search"></i>
-                                    <input type="text" id="trove-search-input" placeholder="Search files..." onkeyup="NeuralStudio.filterSearch()">
-                                </div>
-                                </div>
-
-                            <div id="digital-trove-display" class="trove-grid-system"></div>
-
-                            <div id="neural-viewer" class="trove-overlay" style="display:none;">
-                                <div class="pro-viewer-window">
-                                    <div class="viewer-nav">
-                                        <span id="viewer-title">File Preview</span>
-                                        <div class="viewer-window-controls">
-                                            <button onclick="NeuralStudio.toggleFullScreen()"><i class="fas fa-expand"></i></button>
-                                            <button onclick="NeuralStudio.minimizeViewer()"><i class="fas fa-window-minimize"></i></button>
-                                            <button onclick="NeuralStudio.closeViewer()"><i class="fas fa-times"></i></button>
-                                        </div>
-                                    </div>
-
-                                    <div id="viewer-content">
-                                        </div>
-
-                                    <div class="viewer-footer">
-                                        <button onclick="NeuralStudio.downloadFileFromViewer()" class="action-btn"><i class="fas fa-download"></i> Download</button>
-                                        <button onclick="NeuralStudio.deleteFromViewer()" class="btn-del"><i class="fas fa-trash"></i> Delete</button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="trove-footer">
-                                <span id="storage-count">0 Items</span>
-                                <span id="storage-space">Used: 0 KB</span>
-                            </div>
-                        </section>
-                    </div>
-
-                    <!--- Unified Digital Trove HTML Interface ---->
-                    <div class="gui-card vault-card">    
-                        <div class="card-header ">
-                            <h2>🏛️ Treasury</h2><hr>
-                            <p>Safehouse of file for keepsake.</p>
-                        </div>
-                        <section id="digital-trove-container" class="trove-wrap">
-                        
-                            <div class="trove-header">
-                                <div class="search-box">
-                                    <i class="fas fa-search"></i>
-                                    <input type="text" id="trove-search-input" placeholder="Search your research vault..." onkeyup="NeuralStudio.filterSearch()">
-                                </div>  
-
-                                <div class="trove-controls">
-                                    <div class="control-group">
-                                        <label><i class="fas fa-sort-amount-down"></i> Sort:</label>
-                                        <select id="trove-sort" onchange="NeuralStudio.renderTrove('all', this.value)">
-                                            <option value="date">Date Modified</option>
-                                            <option value="name">Name (A-Z)</option>
-                                            <option value="type">File Type</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="control-group">
-                                        <label><i class="fas fa-filter"></i> Filter:</label>
-                                        <select id="trove-filter" onchange="NeuralStudio.renderTrove(this.value)">
-                                            <option value="all">All Files</option>
-                                            <option value="document">Documents</option>
-                                            <option value="video">Videos</option>
-                                            <option value="image">Images/Canvas</option>
-                                            <option value="audio">Songs/Audio</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="view-btns">
-                                        <button onclick="NeuralStudio.setView('grid')" title="Grid View">
-                                            <i class="fas fa-th-large"></i>
-                                        </button>
-                                        <button onclick="NeuralStudio.setView('list')" title="List View">
-                                            <i class="fas fa-list"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div id="digital-trove-display" class="trove-grid-system">
-                                <div class="empty-state">
-                                    <i class="fas fa-folder-open"></i>
-                                    <p>Your vault is empty.</p>
-                                </div>
-                            </div>
-
-                            <div class="trove-footer">
-                                <span id="storage-count">0 Items</span>
-                                <span id="storage-space">Used: 0 KB</span>
-                                <button class="clear-all-btn" onclick="NeuralStudio.purgeVault()">
-                                    <i class="fas fa-broom"></i> Clear Vault
-                                </button>
-                            </div>
-                        </section>
-                    </div>
-                </section>
-
-                <section id="section-studio" class="app-section">
-                    <div class="navigation">
-                        <button class="nav-item" onclick="showSection('vault')"><span> ⏪ </span></button>
-                        <button class="nav-item" onclick="showSection('annex')"><span> ⏩ </span></button>
-                    </div>                      
-                    <div class="studio-grid">
-                        
-                        <section id="multimedia-studio" class="studio-section">
-                           <div class="gui-card"> 
-                                <div class="card-header ">
-                                   <h2>🏗️ Media Synthesis</h2><hr>
-                                    <p>Use Preompts to generate AI Image, Audio, and Video files and save them in Digital Trove Treasury.</p>
-                                </div>
-                                <div class="generator-container">
-                                    <textarea id="neural-prompt-input" placeholder="Describe what you want to create (e.g., 'A 3D animation of a cell nucleus')..."></textarea>
-                                    
-                                    <div class="gen-tools">
-                                        <select id="gen-type" class="gen-select">
-                                            <option value="video">🎬 AI Video</option>
-                                            <option value="image">🖼️ AI Image</option>
-                                            <option value="audio">🎵 AI Song</option>
-                                        </select>
-                                        
-                                        <div class="gen-btn-group">
-                                            <button onclick="NeuralGenerator.start()" class="btn-start"><i class="fas fa-play"></i> Generate </button>
-                                            <button onclick="NeuralGenerator.stop()" class="btn-stop"><i class="fas fa-stop"></i> Stop </button>
-                                        </div>
-                                    </div>
-
-                                    <div id="studio-preview-window" class="studio-preview">
-                                        <div id="gen-status-display">Prompt synthesis...</div>
-                                        <div id="studio-media-output">
-                                        </div>                                    
-                                    </div>
-                                    
-                                    <div id="studio-post-actions" style="display: none;">
-                                        <div class="output-controls">
-                                                <button onclick="NeuralStudio.saveFromStudio()" class="save-btn">
-                                                <i class="fas fa-file-import"></i> Save To Digital Trove
-                                            </button>
-
-                                            <button onclick="NeuralGenerator.clear()" class="btn-del">
-                                                <i class="fas fa-trash"></i> Discard 
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
-                    </div> 
-                </section>
-
-                <section id="section-annex" class="app-section">
-                    <div class="navigation">
-                        <button class="nav-item" onclick="showSection('studio')"><span> ⏪ </span></button>
-                    </div>                        
-                    <div class="studio-grid">
-                        <div class="gui-card"> 
-
-                            <div class="docs-wrapper">
-                                <nav class="docs-sidebar">
-                                    <div class="nav-header">
-                                        <h2 class="glow-text">📜 ForraNova Hub</h2>
-                                        <p class="system-tag">AI Acardemic App V1.2</p>
-                                    </div>
-
-                                    <ul class="docs-menu-list">
-                                        <li class="nav-label">Core Identity</li>
-                                        <li><a class="nav-item active" onclick="showSection('about')"><i class="fas fa-info-circle"></i> About ForraNova Hub</a></li>
-                                        <li><a class="nav-item" onclick="showSection('features')"><i class="fas fa-layer-group"></i> Architecture</a></li>
-
-                                        <li class="nav-label">Operations</li>
-                                        <li><a class="nav-item" onclick="showSection('class')"><i class="fas fa-graduation-cap"></i> Academy</a></li>
-                                        <li><a class="nav-item" onclick="showSection('resource')"><i class="fas fa-flask"></i> Resource Lab</a></li>
-                                        <li><a class="nav-item" onclick="showSection('trove')"><i class="fas fa-vault"></i> Digital Trove</a></li>
-                                        <li><a class="nav-item" onclick="showSection('multimedia')"><i class="fas fa-photo-video"></i>Multimedia Studio</a></li>
-
-                                        <li class="nav-label">Legal</li>
-                                        <li><a class="nav-item" onclick="showSection('terms')"><i class="fas fa-gavel"></i> Terms of Use</a></li>
-                                        <li><a class="nav-item" onclick="showSection('privacy')"><i class="fas fa-user-shield"></i> Privacy Policy</a></li>
-                                    </ul>                                    
-                                </nav>
-
-                                <main class="docs-content">
-                                    <div id="content-viewport">
-                                        <section id="placeholder-text">
-                                            <h2 class="glow-text">ForraNova</h2>
-                                            <span><i><b>Knowledge is for the living!</b></i></span>
-                                            <br><br><br>
-                                            <div class="sync-status-badge">
-                                                <div class="brand-zone">
-                                                    <a onclick="showSection('academy')">
-                                                        <div class="logo-shield"><img src="https://fofem.github.io/static/images/icon.png" class="splash-logo-img" onerror="this.style.display='none'"></div></a>
-                                                    <div class="brand-text">
-                                                        <h2>ForraNova</h2>
-                                                        <span>AI Hub v1.2</span>
-                                                    </div>
-                                                </div>                                    
-                                            </div>
-                                            <p>Select a topic to read. All documentation is available offline via ForraNova Shield.</p>
-                                        </section>
-
-                                        <div class="id2">
-                                                <img src="https://fofem.github.io/static/images/logoF.png" alt="ForraCorp Logo" onerror="this.style.display='none'"><br>
-                                            <p>© 2026 | ForraNova Hub. (AI Assistant) Architectured By: ForraCorp. <a href="https://fofem.github.io"> fofem.github.io</a></p>
-                                        </div>
-                                    </div>
-                                </main>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <section id="section-about" class="app-section">
-                        <div class="docs-wrapper">
-                            <nav class="docs-sidebar">
-                                <div class="nav-header">
-                                    <h2 class="glow-text">📜 ForraNova Hub</h2>
-                                    <p class="system-tag">AI Acardemic App V1.2</p>
-                                </div>
-
-                                <ul class="docs-menu-list">
-                                    <li class="nav-label">Core Identity</li>
-                                    <li><a class="nav-item active" onclick="showSection('about')"><i class="fas fa-info-circle"></i> About ForraNova Hub</a></li>
-                                    <li><a class="nav-item" onclick="showSection('features')"><i class="fas fa-layer-group"></i> Architecture</a></li>
-
-                                    <li class="nav-label">Operations</li>
-                                    <li><a class="nav-item" onclick="showSection('class')"><i class="fas fa-graduation-cap"></i> Academy</a></li>
-                                    <li><a class="nav-item" onclick="showSection('resource')"><i class="fas fa-flask"></i> Resource Lab</a></li>
-                                    <li><a class="nav-item" onclick="showSection('trove')"><i class="fas fa-vault"></i> Digital Trove</a></li>
-                                    <li><a class="nav-item" onclick="showSection('multimedia')"><i class="fas fa-photo-video"></i>Multimedia Studio</a></li>
-
-                                    <li class="nav-label">Legal</li>
-                                    <li><a class="nav-item" onclick="showSection('terms')"><i class="fas fa-gavel"></i> Terms of Use</a></li>
-                                    <li><a class="nav-item" onclick="showSection('privacy')"><i class="fas fa-user-shield"></i> Privacy Policy</a></li>
-                                </ul>                                   
-                            </nav>
-                            <section id="about-forranova-hub" class="help-container animate-in" style="max-width: 1100px; margin: 40px auto; line-height: 1.6;">
-    
-                                <header class="about-hero" style="text-align: center; padding: 40px 20px; background: var(--glass); border-radius: 20px; border: 1px solid var(--glass-border); margin-bottom: 40px;">
-                                    <h1 class="glow-text" style="font-size: 3rem; margin-bottom: 15px;">🌌 About ForraNova Hub</h1>
-                                    <p style="font-size: 1.2rem; color: var(--text-main); max-width: 800px; margin: 0 auto;">
-                                        A high-performance <strong>Neural Research and Academic Ecosystem</strong>. 
-                                        Representing a revolutionary shift in digital workspaces by merging scientific research, 
-                                        AI creative synthesis, and sophisticated academic testing into a single 
-                                        <span style="color: var(--primary-glow);">"Neural Sync"</span> interface.
-                                    </p>
-                                </header>
-
-                                <div class="help-card" style="border-left: 4px solid var(--secondary-glow); margin-bottom: 40px;">
-                                    <h2 class="glow-text"><i class="fas fa-microchip"></i> The ForraNova Philosophy: "Active Synchronization"</h2>
-                                    <p>
-                                        At its core, ForraNova Hub operates on the principle that information should not just be stored, but <strong>synchronized with the mind</strong>. 
-                                        By utilizing a <strong>Neural Vault (IndexedDB)</strong>, the app creates a "living memory" of every document, calculation, and creative project you engage with, 
-                                        forming a persistent digital profile of your expertise.
-                                    </p>
-                                </div>
-
-                                
-
-                                <h2 class="glow-text" style="text-align: center; margin-bottom: 30px;">Core Wings of the Hub</h2>
-                                <div class="wings-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 25px;">
-                                    
-                                    <article class="help-card" style="height: 100%;">
-                                        <h3><i class="fas fa-flask-vial"></i> 1. The Research & Engineering Lab</h3>
-                                        <p>The analytical engine providing high-precision tools for technical discovery:</p>
-                                        <ul style="list-style: none; padding-left: 0;">
-                                            <li style="margin-bottom: 10px;"><strong><i class="fas fa-calculator"></i> Quantum Graphing Calculator:</strong> Plotting complex functions and solving equations in real-time.</li>
-                                            <li style="margin-bottom: 10px;"><strong><i class="fas fa-satellite-dish"></i> The Digital Probe & Workbench:</strong> The bridge between research and learning where textbooks are "probed" for data.</li>
-                                            <li style="margin-bottom: 10px;"><strong><i class="fas fa-pen-nib"></i> Neural Sketchpad:</strong> A free-hand canvas for schematic drafting and visual brainstorming.</li>
-                                        </ul>
-                                    </article>
-
-                                    <article class="help-card" style="height: 100%;">
-                                        <h3><i class="fas fa-graduation-cap"></i> 2. The ForraNova Academy (Neural Learning)</h3>
-                                        <p>Transforming "ingredients" from the Lab into mastery via a Three-Phase Engine:</p>
-                                        <ul style="list-style: none; padding-left: 0;">
-                                            <li style="margin-bottom: 10px;"><strong>Phase 1 (Objective):</strong> AI-generated multiple-choice recall.</li>
-                                            <li style="margin-bottom: 10px;"><strong>Phase 2 (Identification):</strong> Precision identification of core terminology.</li>
-                                            <li style="margin-bottom: 10px;"><strong>Phase 3 (Theory):</strong> Deep conceptual analysis via AI keyword-grading.</li>
-                                            <li><strong>Weighted Matrix:</strong> 20% Objectives, 20% Fill-in, 40% Theory, 20% Quiz Mastery.</li>
-                                        </ul>
-                                    </article>
-
-                                    <article class="help-card" style="height: 100%;">
-                                        <h3><i class="fas fa-icons"></i> 3. The Multimedia Synthesis Studio</h3>
-                                        <p>The creative pinnacle where ideas become digital assets:</p>
-                                        <ul style="list-style: none; padding-left: 0;">
-                                            <li style="margin-bottom: 10px;"><strong>Neural Synthesis:</strong> Generate AI-driven videos, musical compositions, and high-fidelity images.</li>
-                                            <li style="margin-bottom: 10px;"><strong>Projector Analysis:</strong> Scrutiny-scan files before committing to memory or large projects.</li>
-                                        </ul>
-                                    </article>
-
-                                    <article class="help-card" style="height: 100%;">
-                                        <h3><i class="fas fa-vault"></i> 4. The Digital Treasury (The Data Core)</h3>
-                                        <p>Securing every action within a localized data environment:</p>
-                                        <ul style="list-style: none; padding-left: 0;">
-                                            <li style="margin-bottom: 10px;"><strong>Neural Vault Persistence:</strong> Local storage via IndexedDB for total privacy and offline access.</li>
-                                            <li style="margin-bottom: 10px;"><strong>Official Transcripts:</strong> Professional PDF reports verifying performance across all subjects.</li>
-                                        </ul>
-                                    </article>
-                                </div>
-
-                                <div class="help-card" style="margin-top: 40px; background: rgba(0, 255, 145, 0.05);">
-                                    <h2 class="glow-text"><i class="fas fa-gears"></i> Technical Features & UI Experience</h2>
-                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px;">
-                                        <div>
-                                            <strong><i class="fas fa-headset"></i> Neural Reader:</strong> 
-                                            Integrated PDF decoder with Multi-Voice Synthesis and real-time tracking.
-                                        </div>
-                                        <div>
-                                            <strong><i class="fas fa-palette"></i> Adaptive Theme Engine:</strong> 
-                                            Switch between Deep Forest (Dark) and Pure Mint (Light) modes.
-                                        </div>
-                                        <div>
-                                            <strong><i class="fas fa-user-shield"></i> Proctoring Shield:</strong> 
-                                            Sophisticated timer and focus system to maintain integrity.
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div style="text-align: center; margin-top: 50px; padding: 30px; border: 1px dashed var(--primary-glow); border-radius: 15px;">
-                                    <h3 class="glow-text">The Unified Workflow</h3>
-                                    <p style="font-weight: 800; letter-spacing: 2px; color: var(--text-main);">
-                                        PROBE <i class="fas fa-arrow-right"></i> SYNTHESIZE <i class="fas fa-arrow-right"></i> STORE <i class="fas fa-arrow-right"></i> MASTER
-                                    </p>
-                                    <p style="font-size: 0.9rem; margin-top: 10px;">Extract data <i class="fas fa-chevron-right"></i> Create media <i class="fas fa-chevron-right"></i> Archive discoveries <i class="fas fa-chevron-right"></i> Achieve Alpha-Standing.</p>
-                                </div>
-
-                                <footer style="text-align: center; margin-top: 60px;">
-                                    <blockquote style="font-family: 'Tangerine', cursive; font-size: 2.8rem; color: var(--primary-glow); margin-bottom: 10px;">
-                                        "ForraNova Hub: Where every discovery in the Lab becomes a permanent part of your Academic Identity."
-                                    </blockquote>
-                                </footer>
-                            </section>
-                        </div>
-                </section>
-
-                <section id="section-features" class="app-section">
-                    <div class="docs-wrapper">
-                        <nav class="docs-sidebar">
-                            <div class="nav-header">
-                                <h2 class="glow-text">📜 ForraNova Hub</h2>
-                                <p class="system-tag">AI Acardemic App V1.2</p>
-                            </div>
-
-                            <ul class="docs-menu-list">
-                                <li class="nav-label">Core Identity</li>
-                                <li><a class="nav-item active" onclick="showSection('about')"><i class="fas fa-info-circle"></i> About ForraNova Hub</a></li>
-                                <li><a class="nav-item" onclick="showSection('features')"><i class="fas fa-layer-group"></i> Architecture</a></li>
-
-                                <li class="nav-label">Operations</li>
-                                <li><a class="nav-item" onclick="showSection('class')"><i class="fas fa-graduation-cap"></i> Academy</a></li>
-                                <li><a class="nav-item" onclick="showSection('resource')"><i class="fas fa-flask"></i> Resource Lab</a></li>
-                                <li><a class="nav-item" onclick="showSection('trove')"><i class="fas fa-vault"></i> Digital Trove</a></li>
-                                <li><a class="nav-item" onclick="showSection('multimedia')"><i class="fas fa-photo-video"></i>Multimedia Studio</a></li>
-
-                                <li class="nav-label">Legal</li>
-                                <li><a class="nav-item" onclick="showSection('terms')"><i class="fas fa-gavel"></i> Terms of Use</a></li>
-                                <li><a class="nav-item" onclick="showSection('privacy')"><i class="fas fa-user-shield"></i> Privacy Policy</a></li>
-                            </ul>                                   
-                        </nav>
-                        <section id="feature-architecture" class="help-container animate-in" style="max-width: 1000px; margin: 40px auto;">
-    
-                            <header class="help-header" style="text-align: center; margin-bottom: 40px;">
-                                <h1 class="glow-text" style="font-size: 2.5rem; margin-bottom: 10px;">
-                                    <i class="fas fa-microchip"></i> ForraNova Hub
-                                </h1>
-                                <p class="neural-badge" style="font-size: 1.1rem; padding: 10px 20px;">Complete Feature Architecture</p>
-                                <p style="margin-top: 20px; font-style: italic; color: var(--text-dim);">
-                                    "A high-performance Neural Ecosystem merging advanced research tools, AI-driven creativity, and sophisticated academic testing into a single unified interface."
-                                </p>
-                            </header>
-
-                            <div class="help-content">
-                                
-                                <article class="help-card">
-                                    <h2 class="glow-text"><i class="fas fa-flask-vial"></i> 1. The Research & Engineering Lab (The Core)</h2>
-                                    <p>Designed for deep data extraction and mathematical precision.</p>
-                                    <div class="feature-highlight">
-                                        <ul>
-                                            <li><strong>Quantum Graphing Calculator:</strong> Solve complex functions and real-time advanced equations.</li>
-                                            <li><strong>Digital Probe & Workbench:</strong> Analyze external apps and harvest "ingredients" for exams.</li>
-                                            <li><strong>Neural Sketchpad:</strong> Free-hand drawing for schematics and architectural planning.</li>
-                                            <li><strong>Projector Analysis Display:</strong> High-level file scrutiny and data preparation.</li>
-                                        </ul>
-                                    </div>
-                                </article>
-
-                                <article class="help-card">
-                                    <h2 class="glow-text"><i class="fas fa-graduation-cap"></i> 2. The ForraNova Academy (Neural Learning)</h2>
-                                    <p>Facilitating mastery through a rigorous Three-Phase Examination Engine.</p>
-                                    <table class="report-table" style="margin-top: 15px;">
-                                        <thead>
-                                            <tr>
-                                                <th>Phase / Integration</th>
-                                                <th>Weight</th>
-                                                <th>Description</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td><strong>Phase 1: Objective Recall</strong></td>
-                                                <td>20%</td>
-                                                <td>AI-generated MCQs for rapid recognition.</td>
-                                            </tr>
-                                            <tr>
-                                                <td><strong>Phase 2: Term Identification</strong></td>
-                                                <td>20%</td>
-                                                <td>Precision fill-in-the-blanks from study sessions.</td>
-                                            </tr>
-                                            <tr>
-                                                <td><strong>Phase 3: Theory Reasoning</strong></td>
-                                                <td>40%</td>
-                                                <td>AI-graded essay section using Keyword Scans.</td>
-                                            </tr>
-                                            <tr>
-                                                <td><strong>Practice Quiz-Me</strong></td>
-                                                <td>20%</td>
-                                                <td>Continuous high-frequency neural testing.</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </article>
-
-                                <article class="help-card">
-                                    <h2 class="glow-text"><i class="fas fa-icons"></i> 3. The Multimedia Synthesis Studio (Creative Wing)</h2>
-                                    <p>Transform raw ideas into digital assets using generative AI.</p>
-                                    <div class="feature-highlight">
-                                        <p><i class="fas fa-wand-magic-sparkles"></i> <strong>AI Media Synthesis:</strong> Generate custom videos, musical compositions, and high-fidelity images.</p>
-                                        <p><i class="fas fa-magnifying-glass-chart"></i> <strong>Neural Content Analysis:</strong> Professional toolkit to edit, analyze, or delete synthesized assets and metadata.</p>
-                                    </div>
-                                </article>
-
-                                <article class="help-card">
-                                    <h2 class="glow-text"><i class="fas fa-vault"></i> 4. The Digital Treasury & Vault (Data Management)</h2>
-                                    <p>Localized security and persistence via Neural Database (IndexedDB).</p>
-                                    <ul>
-                                        <li><strong>The Treasury:</strong> Centralized data hub for records, transcripts, and project logs.</li>
-                                        <li><strong>Persistence Sync:</strong> Real-time saving of mastery points, levels, and preferences.</li>
-                                        <li><strong>Secure Reporting:</strong> Export Official Neural Transcripts and PDF certificates.</li>
-                                    </ul>
-                                </article>
-
-                                <article class="help-card">
-                                    <h2 class="glow-text"><i class="fas fa-gears"></i> 5. Universal Core Features</h2>
-                                    <div class="feature-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                                        <div class="feature-highlight">
-                                            <i class="fas fa-headset"></i> <strong>Adaptive Voice (TTS):</strong> Multi-voice Neural Reader with progress tracking.
-                                        </div>
-                                        <div class="feature-highlight">
-                                            <i class="fas fa-bars-staggered"></i> <strong>Global Sidebar UI:</strong> Gesture-controlled, auto-hiding navigation.
-                                        </div>
-                                        <div class="feature-highlight">
-                                            <i class="fas fa-palette"></i> <strong>Theme Engine:</strong> Toggle Deep Forest (Dark) or Pure Mint (Light).
-                                        </div>
-                                        <div class="feature-highlight">
-                                            <i class="fas fa-shield-halved"></i> <strong>Proctoring Shield:</strong> Timer system and auto-submission logic.
-                                        </div>
-                                    </div>
-                                </article>
-
-                                <article class="help-card" style="background: var(--glass); border: 1px solid var(--primary-glow);">
-                                    <h3 style="text-align: center; color: var(--primary-glow);">The ForraNova Workflow Summary</h3>
-                                    <div style="display: flex; justify-content: space-around; text-align: center; margin-top: 20px;">
-                                        <div><h1 class="glow-text">1</h1><p>PROBE</p></div>
-                                        <div><h1 class="glow-text">2</h1><p>SYNTHESIZE</p></div>
-                                        <div><h1 class="glow-text">3</h1><p>STORE</p></div>
-                                        <div><h1 class="glow-text">4</h1><p>MASTER</p></div>
-                                    </div>
-                                </article>
-
-                            </div>
-
-                            <footer class="help-footer" style="margin-top: 40px; border-top: 1px solid var(--glass-border); padding-top: 20px;">
-                                <h2 style="font-family: 'Tangerine', cursive; font-size: 2.5rem; color: var(--primary-glow);">
-                                    "ForraNova Hub: Where every research discovery becomes a permanent part of your neural profile."
-                                </h2>
-                            </footer>
-                        </section>
-                    </div>
-                </section>
-
-                <section id="section-class" class="app-section">
-                    <div class="docs-wrapper">
-                        <nav class="docs-sidebar">
-                            <div class="nav-header">
-                                <h2 class="glow-text">📜 ForraNova Hub</h2>
-                                <p class="system-tag">AI Acardemic App V1.2</p>
-                            </div>
-
-                            <ul class="docs-menu-list">
-                                <li class="nav-label">Core Identity</li>
-                                <li><a class="nav-item active" onclick="showSection('about')"><i class="fas fa-info-circle"></i> About ForraNova Hub</a></li>
-                                <li><a class="nav-item" onclick="showSection('features')"><i class="fas fa-layer-group"></i> Architecture</a></li>
-
-                                <li class="nav-label">Operations</li>
-                                <li><a class="nav-item" onclick="showSection('class')"><i class="fas fa-graduation-cap"></i> Academy</a></li>
-                                <li><a class="nav-item" onclick="showSection('resource')"><i class="fas fa-flask"></i> Resource Lab</a></li>
-                                <li><a class="nav-item" onclick="showSection('trove')"><i class="fas fa-vault"></i> Digital Trove</a></li>
-                                <li><a class="nav-item" onclick="showSection('multimedia')"><i class="fas fa-photo-video"></i>Multimedia Studio</a></li>
-
-                                <li class="nav-label">Legal</li>
-                                <li><a class="nav-item" onclick="showSection('terms')"><i class="fas fa-gavel"></i> Terms of Use</a></li>
-                                <li><a class="nav-item" onclick="showSection('privacy')"><i class="fas fa-user-shield"></i> Privacy Policy</a></li>
-                            </ul>                                   
-                        </nav>
-                        <section id="academy-user-guide" class="help-container animate-in">
-                            <header class="help-header">
-                                <h1 class="glow-text"><i class="fas fa-graduation-cap"></i> ForraNova Academy: User Guide</h1>
-                                <div class="neural-badge">Offline Mode: Active (Neural Shield v1.2)</div>
-                            </header>
-
-                            <div class="help-content">
-                                <article class="help-card">
-                                    <h3><i class="fas fa-brain"></i> 1. Setting Your Neural Focus</h3>
-                                    <p>The Academy organizes your brain into "Subject Compartments."</p>
-                                    <ul>
-                                        <li><strong>Subject Selector:</strong> Use the dropdown to pick your current study field.</li>
-                                        <li><strong>Custom Subjects:</strong> Can't find yours? Type a new subject name in the input field. The <strong>NeuralDB</strong> instantly creates a new slot for it.</li>
-                                        <li><strong>Cognitive Load Bar:</strong> This visual meter tracks your mental investment. High load (more studying) unlocks higher <strong>Mastery Levels</strong>.</li>
-                                    </ul>
-                                </article>
-
-                                <article class="help-card">
-                                    <h3><i class="fas fa-book-reader"></i> 2. The Neural Reader & Progress Map</h3>
-                                    <p>This is where you "ingest" the ingredients for your exams.</p>
-                                    <div class="feature-highlight">
-                                        <i class="fas fa-file-pdf"></i> <strong>PDF Decoding:</strong> Upload any PDF. Our internal engine scrapes the text into the Reader.
-                                    </div>
-                                    <p>Click <strong>"Start Read"</strong> to activate the Multi-Sensory study mode. The AI speaks while the <strong>Progress Map</strong> highlights your position in the text. This uses your device's local TTS (Text-to-Speech) for 100% offline learning.</p>
-                                </article>
-
-                                
-
-                                <article class="help-card">
-                                    <h3><i class="fas fa-microchip"></i> 3. The 3-Phase Neural Examination</h3>
-                                    <p>Once your Cognitive Load is primed, start the final assessment.</p>
-                                    <table class="report-table">
-                                        <thead>
-                                            <tr>
-                                                <th>Phase</th>
-                                                <th>Type</th>
-                                                <th>Weight</th>
-                                                <th>AI Logic</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>Phase 1</td>
-                                                <td>Objectives</td>
-                                                <td>20%</td>
-                                                <td>Recall & Recognition</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Phase 2</td>
-                                                <td>Identification</td>
-                                                <td>20%</td>
-                                                <td>Precision Terminology</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Phase 3</td>
-                                                <td>Theory/Essay</td>
-                                                <td>40%</td>
-                                                <td>Keyword Analysis</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                    <p class="note"><em>*The remaining 20% comes from your "Quiz Me" performance in the sidebar!</em></p>
-                                </article>
-
-                                
-
-                                <article class="help-card">
-                                    <h3><i class="fas fa-desktop"></i> 4. Student Desk & Search</h3>
-                                    <p>Every paper you've ever "written" is stored here.</p>
-                                    <ul>
-                                        <li><strong>Search the Vault:</strong> Use the search bar to retrieve past results from <code>IndexedDB</code>.</li>
-                                        <li><strong>Teacher's Tools:</strong> View detailed logs where <strong>Light Green</strong> rows indicate Alpha Status and <strong>Light Red</strong> rows show Delta (errors).</li>
-                                        <li><strong>Certificate Engine:</strong> Click "Claim Certificate" to generate an official PDF transcript of your mastery.</li>
-                                    </ul>
-                                </article>
-                            </div>
-
-                            <footer class="help-footer">
-                                <button class="action-btn" onclick="showSection('annex')">Close Guide</button>
-                                <p>Tip: All data is saved automatically<code></code>.</p>
-                            </footer>
-                        </section>
-                    </div>
-                </section>
-
-                <section id="section-resource" class="app-section">
-                    <div class="docs-wrapper">
-                        <nav class="docs-sidebar">
-                            <div class="nav-header">
-                                <h2 class="glow-text">📜 ForraNova Hub</h2>
-                                <p class="system-tag">AI Acardemic App V1.2</p>
-                            </div>
-
-                            <ul class="docs-menu-list">
-                                <li class="nav-label">Core Identity</li>
-                                <li><a class="nav-item active" onclick="showSection('about')"><i class="fas fa-info-circle"></i> About ForraNova Hub</a></li>
-                                <li><a class="nav-item" onclick="showSection('features')"><i class="fas fa-layer-group"></i> Architecture</a></li>
-
-                                <li class="nav-label">Operations</li>
-                                <li><a class="nav-item" onclick="showSection('class')"><i class="fas fa-graduation-cap"></i> Academy</a></li>
-                                <li><a class="nav-item" onclick="showSection('resource')"><i class="fas fa-flask"></i> Resource Lab</a></li>
-                                <li><a class="nav-item" onclick="showSection('trove')"><i class="fas fa-vault"></i> Digital Trove</a></li>
-                                <li><a class="nav-item" onclick="showSection('multimedia')"><i class="fas fa-photo-video"></i>Multimedia Studio</a></li>
-
-                                <li class="nav-label">Legal</li>
-                                <li><a class="nav-item" onclick="showSection('terms')"><i class="fas fa-gavel"></i> Terms of Use</a></li>
-                                <li><a class="nav-item" onclick="showSection('privacy')"><i class="fas fa-user-shield"></i> Privacy Policy</a></li>
-                            </ul>                                   
-                        </nav>
-                        <section id="resource-lab-user-guide" class="help-container animate-in">
-                            <header class="help-header">
-                                <h1 class="glow-text"><i class="fas fa-flask-vial"></i> Resource Lab: Engineering & Analysis</h1>
-                                <div class="neural-badge">Status: High-Precision Mode Active</div>
-                            </header>
-
-                            <div class="help-content">
-                                <article class="help-card">
-                                    <h3><i class="fas fa-calculator"></i> 1. The Quantum Graphing Calculator</h3>
-                                    <p>This is not a standard pocket calculator. It is a mathematical engine designed to solve and visualize complex data.</p>
-                                    
-                                    <div class="feature-highlight">
-                                        <strong><i class="fas fa-microchip"></i> Equation Scanning:</strong> Paste or type complex strings. The calculator uses <code>math.js</code> logic to solve derivatives, integrals, and algebraic functions instantly.
-                                    </div>
-
-                                    <ul>
-                                        <li><strong>Graphing Engine:</strong> Every time you solve an equation, the system can plot a visual graph. This helps you see "trends" in data rather than just numbers.</li>
-                                        <li><strong>Variable Memory:</strong> The calculator remembers your previous results, allowing you to use them in the next step of your research.</li>
-                                        <li><strong>Handwritten Recognition:</strong> When linked with the Sketchpad, the AI attempts to "OCR" (recognize) handwritten numbers and move them into the solve-box.</li>
-                                    </ul>
-                                </article>
-
-                                
-
-                                <article class="help-card">
-                                    <h3><i class="fas fa-satellite-dish"></i> 2. The Digital Probe & Workbench</h3>
-                                    <p>The "Probe" is the most powerful research tool in the Hub. It acts as a bridge between the outside world and your Neural Vault.</p>
-                                    
-                                    <div class="info-box">
-                                        <strong>How it works:</strong> The Probe "dissects" files and external apps to find the "ingredients" required for the ForraNova Academy.
-                                    </div>
-
-                                    <ul>
-                                        <li><strong>File Projection:</strong> Click the "Project" icon to display a file on the main analytical screen. Here, you can highlight text, extract images, and tag important facts.</li>
-                                        <li><strong>Ingredient Extraction:</strong> As you find key facts in a document, click "Harvest." These facts are sent to the <code>NeuralDB</code>, where the Academy will later use them to build your Exam Phases.</li>
-                                        <li><strong>Deep Scanning:</strong> Use the Probe to scan images for text (OCR). If you have a photo of a textbook page, the Probe will turn it into editable text for your Reader.</li>
-                                    </ul>
-                                </article>
-
-                                <article class="help-card">
-                                    <h3><i class="fas fa-pen-nib"></i> 3. Neural Sketchpad (Free-hand)</h3>
-                                    <p>Integrated directly into the Lab, the Sketchpad is for visual thinkers.</p>
-                                    <ul>
-                                        <li><strong>Schematic Drafting:</strong> Perfect for drawing circuit diagrams, tailoring patterns, or architectural layouts.</li>
-                                        <li><strong>Vector Export:</strong> Drawings are stored as high-quality data. You can save your sketches to the <strong>Digital Treasury</strong> to keep a visual record of your research.</li>
-                                        <li><strong>Auto-Smoothing:</strong> The AI helps "clean up" your lines, turning shaky hand-drawings into professional-looking schematics.</li>
-                                    </ul>
-                                </article>
-
-                                <article class="help-card">
-                                    <h3><i class="fas fa-sync"></i> The Lab-to-Academy Pipeline</h3>
-                                    <p>For a "Dummy," the flow is simple:</p>
-                                    <ol>
-                                        <li><strong>Calculate:</strong> Solve your technical problems in the Quantum Calculator.</li>
-                                        <li><strong>Probe:</strong> Analyze your study materials and "harvest" the facts.</li>
-                                        <li><strong>Sketch:</strong> Visualize your ideas on the Sketchpad.</li>
-                                        <li><strong>Transfer:</strong> Click <strong>"Sync to Academy"</strong> to move all this Lab data into your Exam Vault.</li>
-                                    </ol>
-                                </article>
-                            </div>
-
-                            
-                            <footer class="help-footer">
-                                <button class="action-btn" onclick="showSection('annex')">Close Guide</button>
-                                <p>Lab Tip: Use the "Deep Scan" feature on images to save hours of typing!</p>
-                            </footer>
-                        </section>
-                    </div>
-                </section>
-
-                <section id="section-multimedia" class="app-section">                                    
-                   <div class="docs-wrapper">
-                        <nav class="docs-sidebar">
-                            <div class="nav-header">
-                                <h2 class="glow-text">📜 ForraNova Hub</h2>
-                                <p class="system-tag">AI Acardemic App V1.2</p>
-                            </div>
-
-                            <ul class="docs-menu-list">
-                                <li class="nav-label">Core Identity</li>
-                                <li><a class="nav-item active" onclick="showSection('about')"><i class="fas fa-info-circle"></i> About ForraNova Hub</a></li>
-                                <li><a class="nav-item" onclick="showSection('features')"><i class="fas fa-layer-group"></i> Architecture</a></li>
-
-                                <li class="nav-label">Operations</li>
-                                <li><a class="nav-item" onclick="showSection('class')"><i class="fas fa-graduation-cap"></i> Academy</a></li>
-                                <li><a class="nav-item" onclick="showSection('resource')"><i class="fas fa-flask"></i> Resource Lab</a></li>
-                                <li><a class="nav-item" onclick="showSection('trove')"><i class="fas fa-vault"></i> Digital Trove</a></li>
-                                <li><a class="nav-item" onclick="showSection('multimedia')"><i class="fas fa-photo-video"></i>Multimedia Studio</a></li>
-
-                                <li class="nav-label">Legal</li>
-                                <li><a class="nav-item" onclick="showSection('terms')"><i class="fas fa-gavel"></i> Terms of Use</a></li>
-                                <li><a class="nav-item" onclick="showSection('privacy')"><i class="fas fa-user-shield"></i> Privacy Policy</a></li>
-                            </ul>                                   
-                        </nav>
-                        <section id="multimedia-studio-user-guide" class="help-container animate-in">
-                            <header class="help-header">
-                                <h1 class="glow-text"><i class="fas fa-icons"></i> Multimedia Studio: Synthesis Guide</h1>
-                                <div class="neural-badge">Engine: AI Creative Suite v2.0</div>
-                            </header>
-
-                            <div class="help-content">
-                                <article class="help-card">
-                                    <h3><i class="fas fa-wand-magic-sparkles"></i> 1. The Generative Suite</h3>
-                                    <p>Transform your research into sensory experiences using our three synthesis engines.</p>
-                                    
-                                    <div class="feature-grid" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
-                                        <div class="feature-highlight" style="text-align:center;">
-                                            <i class="fas fa-video"></i><br><strong>Video</strong>
-                                        </div>
-                                        <div class="feature-highlight" style="text-align:center;">
-                                            <i class="fas fa-music"></i><br><strong>Audio</strong>
-                                        </div>
-                                        <div class="feature-highlight" style="text-align:center;">
-                                            <i class="fas fa-image"></i><br><strong>Imagery</strong>
-                                        </div>
-                                    </div>
-                                    <p><strong>Dummy Tip:</strong> Use the "Copy from Reader" button to instantly paste your lesson notes into the prompt box for the AI to analyze and visualize.</p>
-                                </article>
-
-                                <article class="help-card">
-                                    <h3><i class="fas fa-project-diagram"></i> 2. The Projector & Analysis</h3>
-                                    <p>The <strong>Projector Display</strong> is used to scrutinize your files. When you click a file in the Studio, it is "Projected" for deep analysis.</p>
-                                    <ul>
-                                        <li><strong>Scrutiny Scan:</strong> The AI scans the file for errors or low-resolution artifacts.</li>
-                                        <li><strong>Sync to Treasury:</strong> If you love your creation, click "Save to Vault." It will be filed under its subject in the <strong>Digital Trove</strong>.</li>
-                                    </ul>
-                                </article>
-
-                                <article class="help-card">
-                                    <h3><i class="fas fa-trash-can"></i> 3. Managing Your Assets</h3>
-                                    <p>High-quality media takes up "Neural Space." Use the Studio Manager to keep your Hub running fast.</p>
-                                    <div class="info-box" style="border-left-color: #00ff91;">
-                                        <strong>Pro Tip:</strong> Only save the final "Alpha" versions of your videos and songs. Use the "Delete All Drafts" button to clear out experimental generations.
-                                    </div>
-                                </article>
-                            </div>
-
-                            
-                            <footer class="help-footer">
-                                <button class="action-btn" onclick="showSection('annex')">Close Guide</button>
-                                
-                                <p>Offline Note: Image and Audio generation may require a one-time neural-sync (download) of models while online.</p>
-                            </footer>
-                        </section>
-                    </div> 
-                </section>
-
-                <section id="section-trove" class="app-section">                                    
-                    <div class="docs-wrapper">
-                        <nav class="docs-sidebar">
-                            <div class="nav-header">
-                                <h2 class="glow-text">📜 ForraNova Hub</h2>
-                                <p class="system-tag">AI Acardemic App V1.2</p>
-                            </div>
-
-                            <ul class="docs-menu-list">
-                                <li class="nav-label">Core Identity</li>
-                                <li><a class="nav-item active" onclick="showSection('about')"><i class="fas fa-info-circle"></i> About ForraNova Hub</a></li>
-                                <li><a class="nav-item" onclick="showSection('features')"><i class="fas fa-layer-group"></i> Architecture</a></li>
-
-                                <li class="nav-label">Operations</li>
-                                <li><a class="nav-item" onclick="showSection('class')"><i class="fas fa-graduation-cap"></i> Academy</a></li>
-                                <li><a class="nav-item" onclick="showSection('resource')"><i class="fas fa-flask"></i> Resource Lab</a></li>
-                                <li><a class="nav-item" onclick="showSection('trove')"><i class="fas fa-vault"></i> Digital Trove</a></li>
-                                <li><a class="nav-item" onclick="showSection('multimedia')"><i class="fas fa-photo-video"></i>Multimedia Studio</a></li>
-
-                                <li class="nav-label">Legal</li>
-                                <li><a class="nav-item" onclick="showSection('terms')"><i class="fas fa-gavel"></i> Terms of Use</a></li>
-                                <li><a class="nav-item" onclick="showSection('privacy')"><i class="fas fa-user-shield"></i> Privacy Policy</a></li>
-                            </ul>                                   
-                        </nav>
-                        <section id="digital-trove-user-guide" class="help-container animate-in">
-                            <header class="help-header">
-                                <h1 class="glow-text"><i class="fas fa-vault"></i> Digital Trove: The Data Core</h1>
-                                <div class="neural-badge">Storage Engine: NeuralDB (IndexedDB)</div>
-                            </header>
-
-                            <div class="help-content">
-                                <article class="help-card">
-                                    <h3><i class="fas fa-archive"></i> 1. Your Infinite Filing Cabinet</h3>
-                                    <p>The Trove is where every "ingredient" harvested in the Lab and every score earned in the Academy is permanently filed.</p>
-                                    
-                                    <div class="feature-highlight">
-                                        <strong><i class="fas fa-wifi-slash"></i> 100% Local Privacy:</strong> Because this uses your browser's internal database, your files never touch a cloud server. Your research is yours alone.
-                                    </div>
-
-                                    <ul>
-                                        <li><strong>Neural Records:</strong> Every exam you finish creates a "Record" here.</li>
-                                        <li><strong>Ingredient Storage:</strong> Text snippets harvested from the Digital Probe are stored here for the AI to use later.</li>
-                                        <li><strong>System Persistence:</strong> This room ensures that when you close your browser and return tomorrow, your level, mastery points, and themes are exactly where you left them.</li>
-                                    </ul>
-                                </article>
-
-                                <article class="help-card">
-                                    <h3><i class="fas fa-filter"></i> 2. Sorting the Vault</h3>
-                                    <p>As you use the Hub, the Trove gets crowded. We have built-in "Neural Filters" to help you find what you need.</p>
-                                    
-                                    <table class="report-table">
-                                        <thead>
-                                            <tr>
-                                                <th>Filter Type</th>
-                                                <th>Function</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td><strong>Subject Filter</strong></td>
-                                                <td>Isolates data for a specific field (e.g., only "Mathematics").</td>
-                                            </tr>
-                                            <tr>
-                                                <td><strong>Chronological</strong></td>
-                                                <td>Sorts your research from newest to oldest.</td>
-                                            </tr>
-                                            <tr>
-                                                <td><strong>Mastery Rank</strong></td>
-                                                <td>Groups results by performance (Alpha, Beta, Gamma).</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </article>
-
-                                <article class="help-card">
-                                    <h3><i class="fas fa-search"></i> 3. Global Search</h3>
-                                    <p>The search bar in the Trove is linked to your <strong>Student Desk</strong>. Typing a single keyword will scan thousands of data points instantly.</p>
-                                    <ul>
-                                        <li><strong>Keyword Recovery:</strong> Search for a specific word you remember from a PDF scan to find the original note.</li>
-                                        <li><strong>Deep Retrieval:</strong> The AI doesn't just look for titles; it looks inside your "Theoretical Summaries" to find matches.</li>
-                                    </ul>
-                                </article>
-
-                                <article class="help-card">
-                                    <h3><i class="fas fa-file-export"></i> 4. Exporting & Cleaning</h3>
-                                    <p>Managing a clean workspace is essential for a high "Cognitive Load."</p>
-                                    <div class="info-box" style="border-left-color: #ff4b2b;">
-                                        <strong><i class="fas fa-exclamation-triangle"></i> Data Purge:</strong> You can delete specific entries to save space. However, once a Neural Record is deleted from the Trove, it cannot be recovered.
-                                    </div>
-                                    <ul>
-                                        <li><strong>Transcript Generation:</strong> Select multiple records to compile a single PDF Academic Transcript.</li>
-                                        <li><strong>Vault Backup:</strong> Use the "Export Vault" button to save your entire database as a file. This is useful if you are moving to a new computer!</li>
-                                    </ul>
-                                </article>
-                            </div>
-
-                           
-                            <footer class="help-footer">
-                                <button class="action-btn" onclick="showSection('annex')">Close Guide</button>
-                                <p>Pro Tip: Use the Trove to review your "Delta Status" (errors) from last week to improve today's exam score!</p>
-                            </footer>
-                        </section>
-                    </div>
-                </section>
-
-                <section id="section-terms" class="app-section">
-                    <div class="docs-wrapper">
-                        <nav class="docs-sidebar">
-                            <div class="nav-header">
-                                <h2 class="glow-text">📜 ForraNova Hub</h2>
-                                <p class="system-tag">AI Acardemic App V1.2</p>
-                            </div>
-
-                            <ul class="docs-menu-list">
-                                <li class="nav-label">Core Identity</li>
-                                <li><a class="nav-item active" onclick="showSection('about')"><i class="fas fa-info-circle"></i> About ForraNova Hub</a></li>
-                                <li><a class="nav-item" onclick="showSection('features')"><i class="fas fa-layer-group"></i> Architecture</a></li>
-
-                                <li class="nav-label">Operations</li>
-                                <li><a class="nav-item" onclick="showSection('class')"><i class="fas fa-graduation-cap"></i> Academy</a></li>
-                                <li><a class="nav-item" onclick="showSection('resource')"><i class="fas fa-flask"></i> Resource Lab</a></li>
-                                <li><a class="nav-item" onclick="showSection('trove')"><i class="fas fa-vault"></i> Digital Trove</a></li>
-                                <li><a class="nav-item" onclick="showSection('multimedia')"><i class="fas fa-photo-video"></i>Multimedia Studio</a></li>
-
-                                <li class="nav-label">Legal</li>
-                                <li><a class="nav-item" onclick="showSection('terms')"><i class="fas fa-gavel"></i> Terms of Use</a></li>
-                                <li><a class="nav-item" onclick="showSection('privacy')"><i class="fas fa-user-shield"></i> Privacy Policy</a></li>
-                            </ul>                                   
-                        </nav>
-                        <section id="terms-of-use" class="help-container animate-in" style="max-width: 900px; margin: 40px auto; padding: 40px;">
-    
-                            <header class="terms-header" style="border-bottom: 1px solid var(--glass-border); padding-bottom: 20px; margin-bottom: 30px;">
-                                <h1 class="glow-text" style="font-size: 2.2rem; margin-bottom: 5px;">
-                                    <i class="fas fa-gavel"></i> ForraNova Hub | Terms of Use
-                                </h1>
-                                <div style="display: flex; gap: 20px; font-size: 0.85rem; color: var(--text-dim);">
-                                    <span><strong>Effective Date:</strong> October 2023</span>
-                                    <span><strong>Version:</strong> 1.0.0 (Neural Sync Edition)</span>
-                                </div>
-                            </header>
-
-                            <div class="terms-content" style="color: var(--text-main); line-height: 1.7;">
-                                
-                                <p style="background: var(--glass); padding: 15px; border-radius: 8px; border: 1px solid var(--glass-border); margin-bottom: 25px;">
-                                    Welcome to the ForraNova Hub. By accessing the Research Lab, Multimedia Studio, Digital Treasury, or ForraNova Academy, you agree to be bound by the following terms and conditions. These terms ensure the integrity of our neural learning environment and the security of your research data.
-                                </p>
-
-                                <article class="help-card" style="margin-bottom: 25px;">
-                                    <h3 style="color: var(--primary-glow);"><i class="fas fa-sync-alt"></i> 1. Acceptance of Neural Synchronization</h3>
-                                    <p>By using this application, you acknowledge that the ForraNova Hub operates using a <strong>Local-First Neural Vault (IndexedDB)</strong>. You understand that your study "ingredients," research data, and exam scores are stored within your browser’s secure local storage.</p>
-                                    <ul style="margin-top: 10px; color: var(--text-dim);">
-                                        <li>Users are responsible for maintaining the security of their local device.</li>
-                                        <li>Clearing browser cache or data may result in the permanent deletion of your Neural Vault unless a manual export is performed.</li>
-                                    </ul>
-                                </article>
-
-                                <article class="help-card" style="margin-bottom: 25px;">
-                                    <h3 style="color: var(--primary-glow);"><i class="fas fa-shield-check"></i> 2. Academic Integrity & Proctoring</h3>
-                                    <p>The ForraNova Academy is a professional-grade testing environment.</p>
-                                    <ul style="margin-top: 10px;">
-                                        <li><strong>Proctoring Shield:</strong> You agree to the use of the Hub’s proctoring logic, which monitors focus and session timers.</li>
-                                        <li><strong>Originality:</strong> During Phase 3 (Theory/Essay), users must provide original analysis. The Hub’s AI keyword-matching engine is designed to detect conceptual mastery.</li>
-                                        <li><strong>Certification:</strong> Certificates generated by the Hub are valid only as a reflection of performance within the ForraNova Ecosystem.</li>
-                                    </ul>
-                                </article>
-
-                                <article class="help-card" style="margin-bottom: 25px;">
-                                    <h3 style="color: var(--primary-glow);"><i class="fas fa-flask"></i> 3. Research Lab & Multimedia Synthesis</h3>
-                                    <ul style="margin-top: 10px;">
-                                        <li><strong>Tool Usage:</strong> Tools such as the Quantum Graphing Calculator and Neural Sketchpad are for analytical purposes. ForraNova is not liable for errors in external engineering projects derived from Lab calculations.</li>
-                                        <li><strong>AI Media Generation:</strong> You retain the rights to the AI-generated songs, videos, and images created in the Studio. Content must not violate international copyright or ethical standards.</li>
-                                        <li><strong>Data Deletion:</strong> You have the right to analyze and delete any synthesized media at any time via the Studio Control Panel.</li>
-                                    </ul>
-                                </article>
-
-                                <article class="help-card" style="margin-bottom: 25px;">
-                                    <h3 style="color: var(--primary-glow);"><i class="fas fa-copyright"></i> 4. Intellectual Property & The Digital Treasury</h3>
-                                    <ul style="margin-top: 10px;">
-                                        <li><strong>System Code:</strong> The ForraNova Hub interface, AIGenerator logic, ExamEngine, and "Neural Sync" branding are the intellectual property of ForraNova Academy.</li>
-                                        <li><strong>User Data:</strong> All "ingredients" (lesson notes), project files, and research logs stored in the Treasury belong exclusively to the user.</li>
-                                    </ul>
-                                </article>
-
-                                <article class="help-card" style="margin-bottom: 25px; border-left-color: #ff4b2b;">
-                                    <h3 style="color: #ff4b2b;"><i class="fas fa-user-slash"></i> 5. Prohibited Use</h3>
-                                    <p>Users are strictly prohibited from:</p>
-                                    <ul style="margin-top: 10px; color: var(--text-dim);">
-                                        <li>Attempting to "inject" malicious scripts into the Workbench or Digital Probe.</li>
-                                        <li>Reverse-engineering the AIGenerator logic for commercial exploitation.</li>
-                                        <li>Using the Multimedia Synthesis engine to generate deepfakes or harmful misinformation.</li>
-                                        <li>Sharing "Official Neural Transcripts" that have been manually altered or forged.</li>
-                                    </ul>
-                                </article>
-
-                                <article class="help-card" style="margin-bottom: 25px;">
-                                    <h3 style="color: var(--primary-glow);"><i class="fas fa-exclamation-triangle"></i> 6. Limitation of Liability</h3>
-                                    <p>ForraNova Hub is a tool for learning and research. ForraNova Hub is not responsible for:</p>
-                                    <ul style="margin-top: 10px; color: var(--text-dim);">
-                                        <li>Loss of data due to hardware failure or browser uninstallation.</li>
-                                        <li>The outcome of professional examinations outside of the ForraNova Academy environment.</li>
-                                    </ul>
-                                </article>
-
-                                <article class="help-card" style="margin-bottom: 30px;">
-                                    <h3 style="color: var(--primary-glow);"><i class="fas fa-pen-fancy"></i> 7. Updates to the Hub</h3>
-                                    <p>As a living ecosystem, these terms may be updated to reflect new modules. Continued use of the Hub following updates constitutes acceptance of the new terms.</p>
-                                </article>
-
-                                <footer class="terms-footer" style="text-align: center; background: rgba(0, 255, 145, 0.05); padding: 25px; border-radius: 12px; border: 1px dashed var(--primary-glow);">
-                                    <p style="margin-bottom: 15px; font-weight: 600;">
-                                        By clicking "Enter Hub" or "Start Session," you confirm that you have read, understood, and agreed to these Terms of Use.
-                                    </p>
-                                    <h2 style="font-family: 'Tangerine', cursive; font-size: 2.5rem; color: var(--primary-glow);">
-                                        "ForraNova Hub: Secure. Intelligent. Personalized."
-                                    </h2>
-                                </footer>
-                            </div>
-                        </section>
-
-                    </div>
-                </section>
-
-                <section id="section-privacy" class="app-section">
-                    <div class="docs-wrapper">
-                        <nav class="docs-sidebar">
-                            <div class="nav-header">
-                                <h2 class="glow-text">📜 ForraNova Hub</h2>
-                                <p class="system-tag">AI Acardemic App V1.2</p>
-                            </div>
-
-                            <ul class="docs-menu-list">
-                                <li class="nav-label">Core Identity</li>
-                                <li><a class="nav-item active" onclick="showSection('about')"><i class="fas fa-info-circle"></i> About ForraNova Hub</a></li>
-                                <li><a class="nav-item" onclick="showSection('features')"><i class="fas fa-layer-group"></i> Architecture</a></li>
-
-                                <li class="nav-label">Operations</li>
-                                <li><a class="nav-item" onclick="showSection('class')"><i class="fas fa-graduation-cap"></i> Academy</a></li>
-                                <li><a class="nav-item" onclick="showSection('resource')"><i class="fas fa-flask"></i> Resource Lab</a></li>
-                                <li><a class="nav-item" onclick="showSection('trove')"><i class="fas fa-vault"></i> Digital Trove</a></li>
-                                <li><a class="nav-item" onclick="showSection('multimedia')"><i class="fas fa-photo-video"></i>Multimedia Studio</a></li>
-
-                                <li class="nav-label">Legal</li>
-                                <li><a class="nav-item" onclick="showSection('terms')"><i class="fas fa-gavel"></i> Terms of Use</a></li>
-                                <li><a class="nav-item" onclick="showSection('privacy')"><i class="fas fa-user-shield"></i> Privacy Policy</a></li>
-                            </ul>                                   
-                        </nav>
-                        <section id="privacy-policy" class="help-container animate-in" style="max-width: 900px; margin: 40px auto; padding: 40px; border-top: 4px solid var(--primary-glow);">
-    
-                            <header class="policy-header" style="text-align: center; border-bottom: 1px solid var(--glass-border); padding-bottom: 30px; margin-bottom: 30px;">
-                                <h1 class="glow-text" style="font-size: 2.2rem; margin-bottom: 10px;">
-                                    <i class="fas fa-user-shield"></i> ForraNova Hub | Privacy Policy
-                                </h1>
-                                <p class="neural-badge" style="display: inline-block; font-size: 0.8rem;">Last Updated: February 2026</p>
-                                <p style="margin-top: 20px; font-style: italic; color: var(--text-main);">
-                                    "At ForraNova Hub, we believe that your data is an extension of your mind. Our privacy philosophy is simple: <strong>Your data never leaves your device.</strong>"
-                                </p>
-                            </header>
-
-                            <div class="policy-content" style="line-height: 1.8; color: var(--text-main);">
-                                
-                                <article class="help-card" style="margin-bottom: 25px;">
-                                    <h3><i class="fas fa-server"></i> 1. The "Zero-Server" Data Principle</h3>
-                                    <p>Unlike traditional cloud platforms, ForraNova Hub uses a <strong>Local-First Architecture</strong>.</p>
-                                    <div class="feature-highlight" style="margin-top: 10px; background: rgba(0, 255, 145, 0.05);">
-                                        <ul style="list-style: none; padding-left: 0;">
-                                            <li><strong><i class="fas fa-ban"></i> No External Storage:</strong> Your data is never hosted on central servers.</li>
-                                            <li><strong><i class="fas fa-database"></i> IndexedDB Technology:</strong> All notes, research, and scores are stored in a sandboxed database (<code>NeuralDB</code>) in your browser.</li>
-                                            <li><strong><i class="fas fa-eye-slash"></i> Privacy by Design:</strong> Developers and third parties have zero access to your files.</li>
-                                        </ul>
-                                    </div>
-                                </article>
-
-                                
-
-                                <article class="help-card" style="margin-bottom: 25px;">
-                                    <h3><i class="fas fa-folder-tree"></i> 2. Types of Data Processed</h3>
-                                    <p>Processing occurs strictly within your local environment for:</p>
-                                    <ul>
-                                        <li><strong>Neural Vault Data:</strong> Extracted PDF text and research "ingredients."</li>
-                                        <li><strong>Academic Metrics:</strong> Exam scores and mastery levels.</li>
-                                        <li><strong>Multimedia Assets:</strong> AI-generated songs, images, and videos.</li>
-                                        <li><strong>UI Preferences:</strong> Theme settings and AI personality preferences.</li>
-                                    </ul>
-                                </article>
-
-                                <article class="help-card" style="margin-bottom: 25px;">
-                                    <h3><i class="fas fa-brain"></i> 3. AI Processing & Local Intelligence</h3>
-                                    <p>Our <code>AIGenerator</code> and <code>ExamEngine</code> logic runs on your local machine’s processor.</p>
-                                    <p><strong>No Training Data Collection:</strong> We do not use your materials to "train" global AI models. Your intellectual property remains yours.</p>
-                                </article>
-
-                                <article class="help-card" style="margin-bottom: 25px;">
-                                    <h3><i class="fas fa-file-export"></i> 4. Data Control & Portability</h3>
-                                    <p>You have absolute control:</p>
-                                    <ul>
-                                        <li><strong>Deletion:</strong> Wipe your <strong>Neural Vault</strong> instantly by clearing browser site data or using "Reset System."</li>
-                                        <li><strong>Exporting:</strong> Generate PDF transcripts and certificates for your own records via the <strong>Digital Treasury</strong>.</li>
-                                    </ul>
-                                </article>
-
-                                <article class="help-card" style="margin-bottom: 25px; border-left-color: #ffcc00;">
-                                    <h3><i class="fas fa-lock"></i> 5. Security of the Local Vault</h3>
-                                    <p>While we secure data within <code>IndexedDB</code>, ultimate security depends on your device:</p>
-                                    <ul>
-                                        <li>Use a private, password-protected user profile.</li>
-                                        <li>Avoid public computers where browser local storage might be accessible to others.</li>
-                                    </ul>
-                                </article>
-
-                                <article class="help-card" style="margin-bottom: 25px;">
-                                    <h3><i class="fas fa-link"></i> 6. Third-Party Links & Libraries</h3>
-                                    <p>We use CDNs for libraries like <code>Chart.js</code> and <code>FontAwesome</code>. They may see your IP address during script loading but cannot access your internal Hub data.</p>
-                                </article>
-
-                                <article class="help-card" style="margin-bottom: 25px;">
-                                    <h3><i class="fas fa-child"></i> 7. Children’s Privacy</h3>
-                                    <p>ForraNova Hub is inherently compliant with <strong>COPPA</strong> and <strong>GDPR</strong> because we do not collect, store, or transmit Personally Identifiable Information (PII) to the cloud.</p>
-                                </article>
-
-                                <article class="help-card" style="margin-bottom: 30px;">
-                                    <h3><i class="fas fa-pen-nib"></i> 8. Changes to this Policy</h3>
-                                    <p>Updates will be reflected in the "About" section as new modules are added to the Lab or Studio.</p>
-                                </article>
-
-                                <footer class="policy-footer" style="text-align: center; background: var(--glass); padding: 30px; border-radius: 15px; border: 1px solid var(--glass-border);">
-                                    <h3 style="color: var(--primary-glow);">Contact & Support</h3>
-                                    <p style="font-size: 0.9rem;">
-                                        Since we do not collect contact info, we cannot contact you. For technical questions, see <strong>System Documentation</strong> in the Digital Probe section.
-                                    </p>
-                                    <blockquote style="font-family: 'Tangerine', cursive; font-size: 2.5rem; color: var(--primary-glow); margin-top: 20px;">
-                                        "Your mind is private. Your Hub should be too."
-                                    </blockquote>
-                                </footer>
-                            </div>
-                        </section>
-                    </div>
-                </section>
-
-            </div>
-        </main>
-    </div>
-
-    <div id="debug-panel" class="debug-collapsed">
-        <button id="debug-toggle">MATRIX DATA</button>
-        <div id="debug-content"><pre id="matrix-data">Initializing...</pre></div>
-    </div>
-
-    <div id="certificate-template" class="cert-master-container" style="display:none;">
-        <div class="cert-frame">
-            <div class="cert-content-overlay">
-                <h2 id="cert-student-name" class="font-name">Evelyn Janiyah Ethan</h2>
-                <h3 id="cert-subject-name" class="font-subject">ROBOTICS ENGINEERING</h3>
-                <div class="others">
-                    <span id="cert-level-name" class="font-other">UNIVERSITY YEAR 1</span>
-                    <span id="cert-date" class="font-other">February 05, 2026</span>
-                    <span id="cert-id" class="font-other">FN-99283-X</span>
-                </div>
-            </div>
-        </div>
-        
-        <div class="cert-actions" style="margin-top: 10px;">
-            <button class="action-btn" onclick="CertificateEngine.print()">📄 Save as PDF</button>
-            <button class="action-btn" onclick="document.getElementById('certificate-template').style.display='none'" style="background: #ff4444;">Close View</button>
-        </div>
-    </div>
-    <script type="module" src="app.js"></script>
-    <script>
-        // Simple Section Toggler for the SPA
-        function showSection(sectionId) {
-            // Update Title
-            const titles = { academy: 'ForraNova Academy', lab: 'Resource Lab', vault: 'Digital Trove', studio: 'Multimedia Studio', annex: 'Annex', about: 'About ForraNova Hub', features: 'Architecture', class: 'Operations | Academy', resource: 'Operations | Resource Lab', trove: 'Operations | Digital Trove', multimedia: 'Operations | Multimedia Studio', terms: 'Terms of Use', privacy: 'Privacy Policy' };
-            document.getElementById('view-title').innerText = titles[sectionId];
-            
-            // Toggle Active Classes
-            document.querySelectorAll('.app-section').forEach(s => s.classList.remove('active'));
-            document.getElementById('section-' + sectionId).classList.add('active');
-            
-            // Update Nav Buttons
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            event.currentTarget.classList.add('active');
+</div>
+
+<script>
+/* ======================================================
+   FORRANOVA ACADEMY - PRODUCTION CORE ENGINE
+   Hardened | Streaming | Mobile-First | PWA Ready
+====================================================== */
+
+/* ===============================
+   GLOBAL STATE
+=============================== */
+
+let appState = {
+    user: null,
+    voices: [],
+    currentUtterance: null,
+    animationFrameId: null,
+    recognition: null,
+    isSpeaking: false,
+    isStreaming: false
+};
+
+const wisdomDB = [
+    "Proverbs 4:7 - Wisdom is the most important thing.",
+    "Ecclesiastes 7:12 - Wisdom is a protection.",
+    "James 1:5 - If any of you lacks wisdom, let him ask God."
+];
+
+/* ===============================
+   INITIALIZATION
+=============================== */
+
+document.addEventListener("DOMContentLoaded", () => {
+    startInitializer();
+    setupPWAInstall();
+});
+
+/* ===============================
+   INITIALIZER
+=============================== */
+
+function startInitializer() {
+    let progress = 0;
+    const bar = document.getElementById("progress");
+    const initializer = document.getElementById("initializer");
+
+    const interval = setInterval(() => {
+        progress += 5;
+        bar.style.width = progress + "%";
+
+        if (progress >= 100) {
+            clearInterval(interval);
+            initializer.classList.add("hidden");
+
+            const stored = safeParse(localStorage.getItem("forraUser"));
+            if (stored && stored.name && stored.avatar) {
+                appState.user = stored;
+                loadAcademy();
+            } else {
+                document.getElementById("onboarding").classList.remove("hidden");
+            }
         }
-    </script>
+    }, 80);
+}
+
+/* ===============================
+   SAFE JSON PARSER
+=============================== */
+
+function safeParse(data) {
+    try {
+        return JSON.parse(data);
+    } catch {
+        return null;
+    }
+}
+
+/* ===============================
+   USER STORAGE
+=============================== */
+
+window.saveUser = function () {
+    const name = document.getElementById("nameInput").value.trim();
+    const file = document.getElementById("avatarInput").files[0];
+
+    if (!name || !file) {
+        alert("Enter Name and Avatar");
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = e => {
+        appState.user = {
+            name,
+            avatar: e.target.result,
+            subjects: ["Biology", "Chemistry", "Physics"]
+        };
+        localStorage.setItem("forraUser", JSON.stringify(appState.user));
+        document.getElementById("onboarding").classList.add("hidden");
+        loadAcademy();
+    };
+    reader.readAsDataURL(file);
+};
+
+/* ===============================
+   LOAD ACADEMY
+=============================== */
+
+function loadAcademy() {
+    document.getElementById("academy").classList.remove("hidden");
+
+    document.getElementById("userName").textContent = appState.user.name;
+    document.getElementById("userAvatar").src = appState.user.avatar;
+
+    renderSubjects();
+    initVoices();
+    initMic();
+    welcomeUser();
+}
+
+/* ===============================
+   SUBJECTS
+=============================== */
+
+function renderSubjects() {
+    const select = document.getElementById("subjectSelect");
+    select.innerHTML = "";
+
+    (appState.user.subjects || []).forEach(sub => {
+        const opt = document.createElement("option");
+        opt.textContent = sub;
+        select.appendChild(opt);
+    });
+}
+
+window.addSubject = function () {
+    const sub = prompt("Enter Subject");
+    if (!sub) return;
+
+    appState.user.subjects.push(sub);
+    localStorage.setItem("forraUser", JSON.stringify(appState.user));
+    renderSubjects();
+};
+
+/* ===============================
+   WISDOM
+=============================== */
+
+function randomWisdom() {
+    return wisdomDB[Math.floor(Math.random() * wisdomDB.length)];
+}
+
+/* ===============================
+   VOICE ENGINE (HARDENED)
+=============================== */
+
+function initVoices() {
+    function load() {
+        appState.voices = speechSynthesis.getVoices();
+        const select = document.getElementById("voiceSelect");
+        select.innerHTML = "";
+
+        appState.voices.forEach((v, i) => {
+            const opt = document.createElement("option");
+            opt.value = i;
+            opt.textContent = v.name;
+            select.appendChild(opt);
+        });
+    }
+
+    load();
+    speechSynthesis.onvoiceschanged = load;
+}
+
+function speak(text) {
+    if (!("speechSynthesis" in window)) return;
+
+    speechSynthesis.cancel();
+
+    const utter = new SpeechSynthesisUtterance(text);
+    const voiceIndex = document.getElementById("voiceSelect").value;
+    utter.voice = appState.voices[voiceIndex] || null;
+
+    utter.onstart = () => {
+        appState.isSpeaking = true;
+        startWaveAnimation();
+    };
+
+    utter.onend = () => {
+        appState.isSpeaking = false;
+        stopWaveAnimation();
+    };
+
+    speechSynthesis.speak(utter);
+    appState.currentUtterance = utter;
+}
+
+/* ===============================
+   STREAMING AI ENGINE
+=============================== */
+
+window.sendMessage = async function () {
+    const inputEl = document.getElementById("userInput");
+    const question = inputEl.value.trim();
+    if (!question || appState.isStreaming) return;
+
+    inputEl.value = "";
+    appendMessage("You", question);
+
+    const subject = document.getElementById("subjectSelect").value;
+    const level = document.getElementById("levelSelect").value;
+    const temp = document.getElementById("personaSelect").value;
+
+    const systemPrompt = `
+You are a professional teaching AI.
+Student: ${appState.user.name}
+Subject: ${subject}
+Level: ${level}
+Creativity: ${temp}
+Respond clearly and educationally.
+    `;
+
+    appState.isStreaming = true;
+
+    const responseContainer = appendMessage("AI", "");
+
+    try {
+        const res = await fetch("/api/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                system: systemPrompt,
+                user: question,
+                stream: true
+            })
+        });
+
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+
+        let fullText = "";
+
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            const chunk = decoder.decode(value);
+            fullText += chunk;
+            responseContainer.textContent = fullText;
+            scrollChat();
+        }
+
+        speak(fullText);
+
+    } catch (err) {
+        responseContainer.textContent = "AI connection error.";
+    }
+
+    appState.isStreaming = false;
+};
+
+/* ===============================
+   CHAT UI
+=============================== */
+
+function appendMessage(sender, text) {
+    const chat = document.getElementById("chat");
+
+    const div = document.createElement("div");
+    div.className = "message";
+
+    const strong = document.createElement("strong");
+    strong.textContent = sender + ": ";
+
+    const span = document.createElement("span");
+    span.textContent = text;
+
+    const copyBtn = document.createElement("button");
+    copyBtn.textContent = "Copy";
+    copyBtn.onclick = () => {
+        navigator.clipboard?.writeText(span.textContent).catch(()=>{});
+    };
+
+    div.appendChild(strong);
+    div.appendChild(span);
+    div.appendChild(document.createElement("br"));
+    div.appendChild(copyBtn);
+
+    chat.appendChild(div);
+    scrollChat();
+
+    return span;
+}
+
+function scrollChat() {
+    const chat = document.getElementById("chat");
+    chat.scrollTop = chat.scrollHeight;
+}
+
+/* ===============================
+   MICROPHONE
+=============================== */
+
+function initMic() {
+    const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRec) return;
+
+    appState.recognition = new SpeechRec();
+    appState.recognition.lang = "en-US";
+
+    appState.recognition.onresult = e => {
+        document.getElementById("userInput").value = e.results[0][0].transcript;
+    };
+}
+
+window.startMic = function () {
+    if (!appState.recognition) {
+        alert("Speech recognition not supported.");
+        return;
+    }
+    appState.recognition.start();
+};
+
+/* ===============================
+   WAVE ANIMATION (SAFE LOOP)
+=============================== */
+
+function startWaveAnimation() {
+    const canvas = document.getElementById("waveCanvas");
+    const ctx = canvas.getContext("2d");
+
+    canvas.width = window.innerWidth;
+    canvas.height = 200;
+
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.beginPath();
+
+        for (let x = 0; x < canvas.width; x++) {
+            let y = 100 + Math.sin(x * 0.02 + Date.now() / 200) * 20;
+            ctx.lineTo(x, y);
+        }
+
+        ctx.strokeStyle = "#00f2ff";
+        ctx.stroke();
+
+        appState.animationFrameId = requestAnimationFrame(draw);
+    }
+
+    draw();
+}
+
+function stopWaveAnimation() {
+    cancelAnimationFrame(appState.animationFrameId);
+}
+
+/* ===============================
+   WELCOME MESSAGE
+=============================== */
+
+function welcomeUser() {
+    const msg = `Welcome ${appState.user.name} to ForraNova Academy. Here, we believe 'Knowledge Is For the Living.' Before we begin, keep this thought in mind: ${randomWisdom()}. Now, what would you like to learn?`;
+    appendMessage("AI", msg);
+    speak(msg);
+}
+
+/* ===============================
+   PWA SUPPORT
+=============================== */
+
+function setupPWAInstall() {
+    if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("sw.js").catch(()=>{});
+    }
+}
+</script>
 
 </body>
 </html>
